@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="match_parent"
+	android:layout_height="match_parent">
+
+
+	<VideoView
+		android:id="@+id/rv_video_container"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:layout_gravity="right"
+		android:paddingTop="300dp">
+
+		<Button
+			android:id="@+id/rv_video_btn_follow"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAllCaps="false"
+			android:text="Follow" />
+
+		<Button
+			android:id="@+id/rv_video_btn_like"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAllCaps="false"
+			android:text="Like" />
+
+		<Button
+			android:id="@+id/rv_video_btn_comment"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAllCaps="false"
+			android:text="Comment" />
+
+		<Button
+			android:id="@+id/rv_video_btn_share"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textAllCaps="false"
+			android:text="Share" />
+
+	</LinearLayout>
+
+</FrameLayout>
