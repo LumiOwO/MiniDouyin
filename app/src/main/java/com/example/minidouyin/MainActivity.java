@@ -8,15 +8,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.appbar.AppBarLayout;
+import com.example.minidouyin.fragments.MainFragment;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
 
-	private static final int PAGE_COUNT = 5;
+	private static final int PAGE_COUNT = 2;
 
 	private ViewPager mViewPager;
-	private AppBarLayout mAppBar;
 	private TabLayout mTabLayout;
 
 	@Override
@@ -25,13 +24,18 @@ public class MainActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_main);
 
 		mViewPager = findViewById(R.id.vp_main);
-		mAppBar = findViewById(R.id.ab_main);
 		mTabLayout = findViewById(R.id.tl_main);
 
 		mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
 			@Override
 			public Fragment getItem(int position) {
-				return new VideoFragment();
+				Fragment ret = null;
+				if (position == 0) {
+					ret = new MainFragment();
+				} else if (position == 1) {
+					ret = new MainFragment();
+				}
+				return ret;
 			}
 
 			@Override
@@ -42,7 +46,11 @@ public class MainActivity extends AppCompatActivity {
 			@Nullable
 			@Override
 			public CharSequence getPageTitle(int position) {
-				return super.getPageTitle(position);
+				CharSequence ret = null;
+				if (position == 0) {
+					ret = "首页";
+				}
+				return ret;
 			}
 		});
 

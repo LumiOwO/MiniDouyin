@@ -6,7 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.minidouyin.nearby.fragment.NearbyViewAdapter;
+import com.example.minidouyin.fragments.nearby.fragment.NearbyViewAdapter;
 
 public class TestActivity extends AppCompatActivity
 {

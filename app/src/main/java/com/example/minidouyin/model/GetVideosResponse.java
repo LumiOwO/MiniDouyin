@@ -2,6 +2,7 @@ package com.example.minidouyin.model;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GetVideosResponse
@@ -142,6 +143,10 @@ public class GetVideosResponse
 					", image_h=" + image_h +
 					'}';
 		}
+
+		public Video parseVideo() {
+			return new Video(student_id, user_name, image_url, video_url);
+		}
 	}
 
 	public List<Feed> getFeeds()
@@ -152,6 +157,15 @@ public class GetVideosResponse
 	public void setFeeds(List<Feed> feeds)
 	{
 		this.feeds = feeds;
+	}
+
+	public List<Video> getVideos()
+	{
+		List<Video> videos = new ArrayList<>();
+		for (Feed feed: feeds) {
+			videos.add(feed.parseVideo());
+		}
+		return videos;
 	}
 
 	public boolean isSuccess()

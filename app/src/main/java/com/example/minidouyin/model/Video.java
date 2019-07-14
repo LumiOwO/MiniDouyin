@@ -4,49 +4,60 @@ import com.google.gson.annotations.SerializedName;
 
 public class Video {
 
-	@SerializedName("student_id") private String studentId;
-	@SerializedName("user_name") private String userName;
-	@SerializedName("image_url") private String imageUrl;
-	@SerializedName("video_url") private String videoUrl;
+	@SerializedName("student_id") private String mStudentId;
+	@SerializedName("user_name") private String mUserName;
+	@SerializedName("image_url") private String mImageUrl;
+	@SerializedName("video_url") private String mVideoUrl;
+
+	public Video() {
+
+	}
+
+	public Video(String studentId, String userName, String imageUrl, String videoUrl) {
+		mStudentId = studentId;
+		mUserName = userName;
+		mImageUrl = imageUrl;
+		mVideoUrl = videoUrl;
+	}
 
 	public String getStudentId() {
-		return studentId;
+		return mStudentId;
 	}
 
 	public void setStudentId(String studentId) {
-		this.studentId = studentId;
+		this.mStudentId = studentId;
 	}
 
 	public String getUserName() {
-		return userName;
+		return mUserName;
 	}
 
 	public void setUserName(String userName) {
-		this.userName = userName;
+		this.mUserName = userName;
 	}
 
 	public String getImageUrl() {
-		return imageUrl;
+		return mImageUrl;
 	}
 
 	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
+		this.mImageUrl = imageUrl;
 	}
 
 	public String getVideoUrl() {
-		return videoUrl;
+		return mVideoUrl;
 	}
 
 	public void setVideoUrl(String videoUrl) {
-		this.videoUrl = videoUrl;
+		this.mVideoUrl = videoUrl;
 	}
 
 	@Override
 	public String toString()
 	{
-		return  "student_id" + studentId +
-				"\nuser_name" + userName +
-				"\nimage_url" + imageUrl +
-				"\nvideo_url" + videoUrl;
+		return  "student_id" + mStudentId +
+				"\nuser_name" + mUserName +
+				"\nimage_url" + mImageUrl +
+				"\nvideo_url" + mVideoUrl;
 	}
 }
