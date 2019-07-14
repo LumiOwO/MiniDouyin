@@ -2,7 +2,7 @@ package com.example.minidouyin.net.response;
 
 import com.google.gson.annotations.SerializedName;
 
-public class PostVideoResponse implements Response
+public class PostVideoResponse
 {
 	// "result": {},
 	// "url": "..."

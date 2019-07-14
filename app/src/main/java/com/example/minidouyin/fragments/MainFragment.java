@@ -4,22 +4,26 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
+import com.example.minidouyin.CameraActivity;
 import com.example.minidouyin.R;
+import com.example.minidouyin.SearchActivity;
 import com.example.minidouyin.fragments.nearby.fragment.NearbyFragment;
-import com.example.minidouyin.model.ScrollViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainFragment extends Fragment {
 
 	private static final int PAGE_COUNT = 2;
 
-	private ScrollViewPager mViewPager;
+	private TextView mPhoto, mSearch;
+	private ViewPager mViewPager;
 	private TabLayout mTabLayout;
 
 	@Override
@@ -28,6 +32,23 @@ public class MainFragment extends Fragment {
 
 		mViewPager = view.findViewById(R.id.fragment_main_vp);
 		mTabLayout = view.findViewById(R.id.fragment_main_tl);
+
+		mPhoto = view.findViewById(R.id.fragment_main_tv_photo);
+		mSearch = view.findViewById(R.id.fragment_main_tv_search);
+
+		mPhoto.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				CameraActivity.launch(getActivity());
+			}
+		});
+
+		mSearch.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				SearchActivity.launch(getActivity());
+			}
+		});
 
 		mViewPager.setAdapter(new FragmentPagerAdapter(getFragmentManager()) {
 			@Override

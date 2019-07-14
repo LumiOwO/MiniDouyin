@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minidouyin.R;
 import com.example.minidouyin.model.Video;
+import com.example.minidouyin.net.IMiniDouyinService;
 import com.example.minidouyin.net.NetManager;
 import com.example.minidouyin.net.OnNetListener;
 import com.example.minidouyin.net.response.GetVideosResponse;

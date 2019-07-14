@@ -3,18 +3,36 @@
 	android:orientation="vertical" android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<com.google.android.material.tabs.TabLayout
-		android:id="@+id/fragment_main_tl"
+	<LinearLayout
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content">
 
-	</com.google.android.material.tabs.TabLayout>
+		<TextView
+			android:id="@+id/fragment_main_tv_photo"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:text="photo"
+			android:gravity="center" />
 
-	<com.example.minidouyin.model.ScrollViewPager
+		<com.google.android.material.tabs.TabLayout
+			android:id="@+id/fragment_main_tl"
+			android:layout_width="0dp"
+			android:layout_weight="1"
+			android:layout_height="wrap_content" />
+
+		<TextView
+			android:id="@+id/fragment_main_tv_search"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:text="search"
+			android:gravity="center" />
+
+	</LinearLayout>
+
+
+	<androidx.viewpager.widget.ViewPager
 		android:id="@+id/fragment_main_vp"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content">
-
-	</com.example.minidouyin.model.ScrollViewPager>
+		android:layout_height="wrap_content" />
 
 </LinearLayout>
