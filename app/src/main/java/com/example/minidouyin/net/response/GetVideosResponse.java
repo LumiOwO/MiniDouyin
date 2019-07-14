@@ -1,11 +1,12 @@
-package com.example.minidouyin.model;
+package com.example.minidouyin.net.response;
 
+import com.example.minidouyin.model.Video;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetVideosResponse
+public class GetVideosResponse implements Response
 {
 	// "feeds": [
 	// {

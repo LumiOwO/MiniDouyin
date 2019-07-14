@@ -2,6 +2,7 @@ package com.example.minidouyin.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,8 +21,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minidouyin.R;
 import com.example.minidouyin.model.Video;
-import com.example.minidouyin.model.GetVideosResponse;
-import com.example.minidouyin.service.IMiniDouyinService;
+import com.example.minidouyin.net.NetManager;
+import com.example.minidouyin.net.OnNetListener;
+import com.example.minidouyin.net.response.GetVideosResponse;
+import com.example.minidouyin.net.IMiniDouyinService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +38,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class VideoFragment extends Fragment {
 	private static final String TAG = "VideoFragment";
 
-	private Retrofit mRetrofit = new Retrofit.Builder()
-			.baseUrl(IMiniDouyinService.BASE_URL)
-			.addConverterFactory(GsonConverterFactory.create())
-			.build();
-	private IMiniDouyinService miniDouyinService = mRetrofit.create(IMiniDouyinService.class);
-
+	private NetManager mNetManager = new NetManager();
 
 	private RecyclerView mRecyclerView;
 	private List<Video> mVideoList = new ArrayList<>();
@@ -68,12 +66,12 @@ public class VideoFragment extends Fragment {
 		}
 
 		public void bind(Activity activity, Video video) {
-//			if (!video.getVideoUrl().isEmpty()) {
+			if (!video.getVideoUrl().isEmpty()) {
 //				mVideoView.setMediaController(new MediaController(activity.getApplicationContext()));
-//				mVideoView.setVideoURI(Uri.parse(video.getVideoUrl()));
-//				mVideoView.requestFocus();
-//				mVideoView.start();
-//			}
+				mVideoView.setVideoURI(Uri.parse(video.getVideoUrl()));
+				mVideoView.requestFocus();
+				mVideoView.start();
+			}
 			mBtnFollow.setText(video.getStudentId());
 		}
 	}
@@ -85,6 +83,21 @@ public class VideoFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_video, container, false);
 
 		mRecyclerView = view.findViewById(R.id.rv_video);
+
+		mNetManager.setOnGetListener(new OnNetListener()
+		{
+			@Override
+			public void exec(Response<?> response)
+			{
+				if (response.isSuccessful() && response.body() != null) {
+					GetVideosResponse body = (GetVideosResponse)response.body();
+					mVideoList = body.getVideos();
+					mRecyclerView.getAdapter().notifyDataSetChanged();
+				}
+				Toast.makeText(getContext(), "refresh success", Toast.LENGTH_SHORT).show();
+				Log.d(TAG, "initVideoList: " + mVideoList.size());
+			}
+		});
 
 		initRecyclerView();
 		initVideoList();
@@ -119,24 +132,7 @@ public class VideoFragment extends Fragment {
 
 	private void initVideoList() {
 		Toast.makeText(getContext(), "refresh begin", Toast.LENGTH_SHORT).show();
-		Call<GetVideosResponse> call = miniDouyinService.getVideos();
-		call.enqueue(new Callback<GetVideosResponse>() {
-			@Override
-			public void onResponse(Call<GetVideosResponse> call, Response<GetVideosResponse> response) {
-				if (response.isSuccessful() && response.body() != null) {
-					mVideoList = response.body().getVideos();
-					mRecyclerView.getAdapter().notifyDataSetChanged();
-				}
-				Toast.makeText(getContext(), "refresh success", Toast.LENGTH_SHORT).show();
-				Log.d(TAG, "initVideoList: " + mVideoList.size());
-			}
-
-			@Override
-			public void onFailure(Call<GetVideosResponse> call, Throwable t) {
-
-				Toast.makeText(getContext(), "refresh failed " + t.getMessage(), Toast.LENGTH_SHORT).show();
-			}
-		});
+		mNetManager.execGetFeeds();
 	}
 
 }

@@ -1,7 +1,7 @@
-package com.example.minidouyin.service;
+package com.example.minidouyin.net;
 
-import com.example.minidouyin.model.GetVideosResponse;
-import com.example.minidouyin.model.PostVideoResponse;
+import com.example.minidouyin.net.response.GetVideosResponse;
+import com.example.minidouyin.net.response.PostVideoResponse;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;

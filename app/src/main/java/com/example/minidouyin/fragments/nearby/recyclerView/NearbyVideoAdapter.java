@@ -8,9 +8,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minidouyin.R;
-import com.example.minidouyin.model.GetVideosResponse;
+import com.example.minidouyin.net.NetManager;
+import com.example.minidouyin.net.OnNetListener;
+import com.example.minidouyin.net.response.GetVideosResponse;
 import com.example.minidouyin.model.Video;
-import com.example.minidouyin.service.IMiniDouyinService;
+import com.example.minidouyin.net.IMiniDouyinService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,22 +25,39 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class NearbyVideoAdapter extends RecyclerView.Adapter
 {
-	// network
-	private Retrofit mRetrofit;
-	private IMiniDouyinService mService;
-
 	// content
 	private ArrayList<Video> mList;
+	private NetManager mNetManager = new NetManager();
 
 	public NearbyVideoAdapter()
 	{
-		mRetrofit = new Retrofit.Builder()
-				.baseUrl(IMiniDouyinService.BASE_URL)
-				.addConverterFactory(GsonConverterFactory.create())
-				.build();
-		mService = mRetrofit.create(IMiniDouyinService.class);
-
 		mList = new ArrayList<Video>();
+
+		mNetManager.setOnGetListener(new OnNetListener()
+		{
+			@Override
+			public void exec(Response<?> res)
+			{
+				// create videos
+				GetVideosResponse response = (GetVideosResponse)res.body();
+				List<GetVideosResponse.Feed> feeds = response.getFeeds();
+				mList.clear();
+				for(int i=0; i<feeds.size(); i++)
+				{
+					GetVideosResponse.Feed feed = feeds.get(i);
+					Video video = new Video();
+
+					video.setUserName(feed.getUser_name());
+					video.setStudentId(feed.getStudent_id());
+					video.setImageUrl(feed.getImage_url());
+					video.setVideoUrl(feed.getVideo_url());
+
+					mList.add(video);
+				}
+				// update view
+				notifyDataSetChanged();
+			}
+		});
 	}
 
 	@NonNull
@@ -67,36 +86,6 @@ public class NearbyVideoAdapter extends RecyclerView.Adapter
 
 	public void refreshView()
 	{
-		Call<GetVideosResponse> call = mService.getVideos();
-		call.enqueue(new Callback<GetVideosResponse>()
-		{
-			@Override
-			public void onResponse(Call<GetVideosResponse> call, Response<GetVideosResponse> response)
-			{
-				// create videos
-				List<GetVideosResponse.Feed> feeds = response.body().getFeeds();
-				mList.clear();
-				for(int i=0; i<feeds.size(); i++)
-				{
-					GetVideosResponse.Feed feed = feeds.get(i);
-					Video video = new Video();
-
-					video.setUserName(feed.getUser_name());
-					video.setStudentId(feed.getStudent_id());
-					video.setImageUrl(feed.getImage_url());
-					video.setVideoUrl(feed.getVideo_url());
-
-					mList.add(video);
-				}
-				// update view
-				notifyDataSetChanged();
-			}
-
-			@Override
-			public void onFailure(Call<GetVideosResponse> call, Throwable t)
-			{
-				t.printStackTrace();
-			}
-		});
+		mNetManager.execGetFeeds();
 	}
 }
