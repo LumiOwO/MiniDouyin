@@ -3,10 +3,10 @@ package com.example.minidouyin.net.response;
 import com.example.minidouyin.model.Video;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class GetVideosResponse implements Response
+public class GetVideosResponse
 {
 	// "feeds": [
 	// {
@@ -162,11 +162,7 @@ public class GetVideosResponse implements Response
 
 	public List<Video> getVideos()
 	{
-		List<Video> videos = new ArrayList<>();
-		for (Feed feed: feeds) {
-			videos.add(feed.parseVideo());
-		}
-		return videos;
+		return feeds.stream().map(Feed::parseVideo).collect(Collectors.toList());
 	}
 
 	public boolean isSuccess()
