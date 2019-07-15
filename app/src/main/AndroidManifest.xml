@@ -25,8 +25,9 @@
 			</intent-filter>
 		</activity>
 
-		<activity android:name=".SearchActivity"></activity>
-		<activity android:name=".CameraActivity"></activity>
+		<activity android:name=".activities.SearchActivity"></activity>
+		<activity android:name=".activities.CameraActivity"></activity>
+        <activity android:name=".activities.PlayActivity"></activity>
 	</application>
 
 </manifest>

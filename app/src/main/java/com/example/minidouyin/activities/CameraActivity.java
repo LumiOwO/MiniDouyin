@@ -1,4 +1,4 @@
-package com.example.minidouyin;
+package com.example.minidouyin.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -7,10 +7,10 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class SearchActivity extends AppCompatActivity {
+public class CameraActivity extends AppCompatActivity {
 
 	public static void launch(Activity activity) {
-		Intent intent = new Intent(activity, SearchActivity.class);
+		Intent intent = new Intent(activity, CameraActivity.class);
 		activity.startActivity(intent);
 	}
 
@@ -19,5 +19,4 @@ public class SearchActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 
 	}
-
 }

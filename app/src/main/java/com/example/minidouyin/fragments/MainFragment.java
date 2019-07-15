@@ -12,10 +12,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.minidouyin.CameraActivity;
+import com.example.minidouyin.activities.CameraActivity;
 import com.example.minidouyin.R;
-import com.example.minidouyin.SearchActivity;
-import com.example.minidouyin.fragments.nearby.fragment.NearbyFragment;
+import com.example.minidouyin.activities.SearchActivity;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainFragment extends Fragment {
@@ -55,7 +54,7 @@ public class MainFragment extends Fragment {
 			public Fragment getItem(int position) {
 				Fragment ret = null;
 				if (position == 0) {
-					ret = new VideoFragment();
+					ret = VideoFragment.launch();
 				} else if (position == 1) {
 					ret = new NearbyFragment();
 				}
