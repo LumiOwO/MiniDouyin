@@ -22,14 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.minidouyin.R;
 import com.example.minidouyin.model.Video;
 import com.example.minidouyin.net.NetManager;
-import com.example.minidouyin.net.OnNetListener;
 import com.example.minidouyin.net.response.GetVideosResponse;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Response;
 
 public class VideoFragment extends Fragment {
 	private static final String TAG = "VideoFragment";
@@ -81,19 +78,14 @@ public class VideoFragment extends Fragment {
 
 		mRecyclerView = view.findViewById(R.id.rv_video);
 
-		mNetManager.setOnGetListener(new OnNetListener()
-		{
-			@Override
-			public void exec(Response<?> response)
-			{
-				if (response.isSuccessful() && response.body() != null) {
-					GetVideosResponse body = (GetVideosResponse)response.body();
-					mVideoList = body.getVideos();
-					mRecyclerView.getAdapter().notifyDataSetChanged();
-				}
-				Toast.makeText(getContext(), "refresh success", Toast.LENGTH_SHORT).show();
-				Log.d(TAG, "initVideoList: " + mVideoList.size());
+		mNetManager.setOnGetListener(response -> {
+			if (response.isSuccessful() && response.body() != null) {
+				GetVideosResponse body = (GetVideosResponse)response.body();
+				mVideoList = body.getVideos();
+				mRecyclerView.getAdapter().notifyDataSetChanged();
 			}
+			Toast.makeText(getContext(), "refresh success", Toast.LENGTH_SHORT).show();
+			Log.d(TAG, "initVideoList: " + mVideoList.size());
 		});
 
 		initVideoList();

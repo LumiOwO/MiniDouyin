@@ -55,5 +55,15 @@ public class MainActivity extends AppCompatActivity {
 		});
 
 		mTabLayout.setupWithViewPager(mViewPager);
+
+//		new Thread() {
+//			@Override
+//			public void run() {
+//				super.run();
+//				while (true) {
+//
+//				}
+//			}
+//		}.start();
 	}
 }
