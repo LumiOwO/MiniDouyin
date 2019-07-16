@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -21,10 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minidouyin.R;
 import com.example.minidouyin.model.Video;
-import com.example.minidouyin.net.IMiniDouyinService;
 import com.example.minidouyin.net.NetManager;
 import com.example.minidouyin.net.OnNetListener;
 import com.example.minidouyin.net.response.GetVideosResponse;
+import com.sackcentury.shinebuttonlib.ShineButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +40,10 @@ public class VideoFragment extends Fragment {
 
 	private static class VideoViewHolder extends RecyclerView.ViewHolder {
 		private VideoView mVideoView;
-		private Button mBtnFollow;
-		private Button mBtnLike;
-		private Button mBtnComment;
-		private Button mBtnShare;
+		private ShineButton mBtnFollow;
+		private ShineButton mBtnLike;
+		private ShineButton mBtnComment;
+		private ShineButton mBtnShare;
 //		private TextView mTVInfo;
 
 		public VideoViewHolder(@NonNull View itemView) {
@@ -54,6 +53,31 @@ public class VideoFragment extends Fragment {
 			mBtnLike = itemView.findViewById(R.id.rv_video_btn_like);
 			mBtnComment = itemView.findViewById(R.id.rv_video_btn_comment);
 			mBtnShare = itemView.findViewById(R.id.rv_video_btn_share);
+
+			Activity activity = (Activity) itemView.getContext();
+			mBtnFollow.init(activity);
+			mBtnLike.init(activity);
+			mBtnComment.init(activity);
+			mBtnShare.init(activity);
+
+			mBtnComment.setOnCheckStateChangeListener(new ShineButton.OnCheckedChangeListener()
+			{
+				@Override
+				public void onCheckedChanged(View view, boolean checked)
+				{
+					if(checked)
+						mBtnComment.setChecked(false);
+				}
+			});
+			mBtnShare.setOnCheckStateChangeListener(new ShineButton.OnCheckedChangeListener()
+			{
+				@Override
+				public void onCheckedChanged(View view, boolean checked)
+				{
+					if(checked)
+						mBtnShare.setChecked(false);
+				}
+			});
 		}
 
 		public static VideoViewHolder create(Context context, ViewGroup parent) {
@@ -68,7 +92,7 @@ public class VideoFragment extends Fragment {
 				mVideoView.requestFocus();
 				mVideoView.start();
 			}
-			mBtnFollow.setText(video.getStudentId());
+//			mBtnFollow.setText(video.getStudentId());
 		}
 	}
 

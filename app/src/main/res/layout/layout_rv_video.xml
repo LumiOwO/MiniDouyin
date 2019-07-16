@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical" android:layout_width="match_parent"
+<FrameLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	android:orientation="vertical"
+	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
 
@@ -13,36 +16,55 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:orientation="vertical"
-		android:layout_gravity="right"
-		android:paddingTop="300dp">
+		android:layout_gravity="right|bottom">
 
-		<Button
+		<com.sackcentury.shinebuttonlib.ShineButton
 			android:id="@+id/rv_video_btn_follow"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textAllCaps="false"
-			android:text="Follow" />
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:layout_gravity="end"
+			android:layout_margin="5dp"
+			android:src="@android:color/darker_gray"
+			app:btn_color="@android:color/darker_gray"
+			app:btn_fill_color="@android:color/holo_orange_light"
+			app:allow_random_color="true"
+			app:siShape="@raw/star"/>
 
-		<Button
+		<com.sackcentury.shinebuttonlib.ShineButton
 			android:id="@+id/rv_video_btn_like"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textAllCaps="false"
-			android:text="Like" />
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:layout_gravity="end"
+			android:layout_margin="5dp"
+			android:src="@android:color/darker_gray"
+			app:btn_color="@android:color/darker_gray"
+			app:btn_fill_color="@android:color/holo_red_light"
+			app:allow_random_color="true"
+			app:siShape="@raw/heart"/>
 
-		<Button
+		<com.sackcentury.shinebuttonlib.ShineButton
 			android:id="@+id/rv_video_btn_comment"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textAllCaps="false"
-			android:text="Comment" />
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:layout_gravity="end"
+			android:layout_margin="5dp"
+			android:src="@android:color/holo_green_dark"
+			app:btn_color="@android:color/holo_green_dark"
+			app:btn_fill_color="@android:color/holo_green_dark"
+			app:allow_random_color="true"
+			app:siShape="@raw/comment"/>
 
-		<Button
+		<com.sackcentury.shinebuttonlib.ShineButton
 			android:id="@+id/rv_video_btn_share"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textAllCaps="false"
-			android:text="Share" />
+			android:layout_width="50dp"
+			android:layout_height="50dp"
+			android:layout_gravity="end"
+			android:layout_margin="5dp"
+			android:src="@android:color/holo_blue_dark"
+			app:btn_color="@android:color/holo_blue_dark"
+			app:btn_fill_color="@android:color/holo_blue_dark"
+			app:allow_random_color="true"
+			app:siShape="@raw/share"/>
 
 	</LinearLayout>
 

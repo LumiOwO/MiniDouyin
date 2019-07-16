@@ -47,4 +47,6 @@ dependencies {
     implementation 'me.kaelaela:verticalviewpager:1.0.0@aar'
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-3'
+
+    implementation 'com.sackcentury:shinebutton:1.0.0'
 }
