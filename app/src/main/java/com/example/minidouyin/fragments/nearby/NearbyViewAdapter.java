@@ -1,9 +1,11 @@
-package com.example.minidouyin.fragments.nearby.fragment;
+package com.example.minidouyin.fragments.nearby;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import com.example.minidouyin.fragments.NearbyFragment;
 
 public class NearbyViewAdapter extends FragmentPagerAdapter
 {

@@ -10,7 +10,8 @@
 	<VideoView
 		android:id="@+id/rv_video_container"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent" />
+		android:layout_height="match_parent"
+		android:scaleType="centerCrop"/>
 
 	<LinearLayout
 		android:layout_width="wrap_content"

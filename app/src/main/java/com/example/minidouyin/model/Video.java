@@ -2,7 +2,10 @@ package com.example.minidouyin.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Video {
+import java.io.Serializable;
+
+public class Video implements Serializable
+{
 
 	@SerializedName("student_id") private String mStudentId;
 	@SerializedName("user_name") private String mUserName;

@@ -21,14 +21,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.minidouyin.R;
 import com.example.minidouyin.model.Video;
 import com.example.minidouyin.net.NetManager;
-import com.example.minidouyin.net.OnNetListener;
 import com.example.minidouyin.net.response.GetVideosResponse;
 import com.sackcentury.shinebuttonlib.ShineButton;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Response;
 
 public class VideoFragment extends Fragment {
 	private static final String TAG = "VideoFragment";
@@ -37,6 +35,7 @@ public class VideoFragment extends Fragment {
 
 	private RecyclerView mRecyclerView;
 	private List<Video> mVideoList = new ArrayList<>();
+	private int mStartPosition = 0;
 
 	private static class VideoViewHolder extends RecyclerView.ViewHolder {
 		private VideoView mVideoView;
@@ -104,23 +103,22 @@ public class VideoFragment extends Fragment {
 
 		mRecyclerView = view.findViewById(R.id.rv_video);
 
-		mNetManager.setOnGetListener(new OnNetListener()
-		{
-			@Override
-			public void exec(Response<?> response)
-			{
-				if (response.isSuccessful() && response.body() != null) {
-					GetVideosResponse body = (GetVideosResponse)response.body();
-					mVideoList = body.getVideos();
-					mRecyclerView.getAdapter().notifyDataSetChanged();
-				}
-				Toast.makeText(getContext(), "refresh success", Toast.LENGTH_SHORT).show();
-				Log.d(TAG, "initVideoList: " + mVideoList.size());
+		mNetManager.setOnGetListener(response -> {
+			if (response.isSuccessful() && response.body() != null) {
+				GetVideosResponse body = (GetVideosResponse)response.body();
+				mVideoList = body.getVideos();
+				mRecyclerView.getAdapter().notifyDataSetChanged();
 			}
+			Toast.makeText(getContext(), "refresh success", Toast.LENGTH_SHORT).show();
+			Log.d(TAG, "initVideoList: " + mVideoList.size());
 		});
 
-		initRecyclerView();
 		initVideoList();
+		initRecyclerView();
+
+		Log.d("start", mStartPosition + "");
+		mRecyclerView.getLayoutManager().scrollToPosition(mStartPosition);
+
 		return view;
 	}
 
@@ -151,8 +149,33 @@ public class VideoFragment extends Fragment {
 	}
 
 	private void initVideoList() {
-		Toast.makeText(getContext(), "refresh begin", Toast.LENGTH_SHORT).show();
-		mNetManager.execGetFeeds();
+		// get bundle arguments
+		Bundle bundle = getArguments();
+		List<Video> playlist = (List<Video>)bundle.getSerializable("playlist");
+		if(playlist == null) {
+			Toast.makeText(getContext(), "refresh begin", Toast.LENGTH_SHORT).show();
+			mNetManager.execGetFeeds();
+		} else {
+			mVideoList = playlist;
+			mStartPosition = bundle.getInt("startPosition");
+		}
+	}
+
+	public static VideoFragment launch()
+	{
+		return launch(null, -1);
+	}
+
+	public static VideoFragment launch(List<Video> playList, int startPosition)
+	{
+		Bundle bundle = new Bundle();
+		bundle.putSerializable("playlist", (Serializable) playList);
+		bundle.putInt("startPosition", startPosition);
+
+		VideoFragment fragment = new VideoFragment();
+		fragment.setArguments(bundle);
+
+		return fragment;
 	}
 
 }

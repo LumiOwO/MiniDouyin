@@ -1,4 +1,4 @@
-package com.example.minidouyin.fragments.nearby.fragment;
+package com.example.minidouyin.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minidouyin.R;
-import com.example.minidouyin.fragments.nearby.recyclerView.NearbyVideoAdapter;
+import com.example.minidouyin.fragments.nearby.NearbyVideoAdapter;
 
 public class NearbyFragment extends Fragment
 {

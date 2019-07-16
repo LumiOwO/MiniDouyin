@@ -42,20 +42,7 @@ public class NetManager
 	public void execGetFeeds()
 	{
 		Call<GetVideosResponse> call = mService.getVideos();
-		call.enqueue(new Callback<GetVideosResponse>()
-		{
-			@Override
-			public void onResponse(Call<GetVideosResponse> call, Response<GetVideosResponse> response)
-			{
-				mGetListener.exec(response);
-			}
-
-			@Override
-			public void onFailure(Call<GetVideosResponse> call, Throwable t)
-			{
-				t.printStackTrace();
-			}
-		});
+		enqueueCall(call, mGetListener);
 	}
 
 	public void execPostFeed(String id,
@@ -64,16 +51,21 @@ public class NetManager
 						 MultipartBody.Part video)
 	{
 		Call<PostVideoResponse> call = mService.postVideo(id, userName, image, video);
-		call.enqueue(new Callback<PostVideoResponse>()
+		enqueueCall(call, mPostListener);
+	}
+
+	private <T> void enqueueCall(Call<T> call, OnNetListener listener)
+	{
+		call.enqueue(new Callback<T>()
 		{
 			@Override
-			public void onResponse(Call<PostVideoResponse> call, Response<PostVideoResponse> response)
+			public void onResponse(Call<T> call, Response<T> response)
 			{
-				mPostListener.exec(response);
+				listener.exec(response);
 			}
 
 			@Override
-			public void onFailure(Call<PostVideoResponse> call, Throwable t)
+			public void onFailure(Call<T> call, Throwable t)
 			{
 				t.printStackTrace();
 			}
