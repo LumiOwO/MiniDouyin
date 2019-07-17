@@ -14,10 +14,6 @@ import com.example.minidouyin.model.Video;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by guoshuyu on 2017/1/9.
- */
-
 public class VideoRecyclerAdapter extends RecyclerView.Adapter {
     private final static String TAG = "RecyclerBaseAdapter";
 

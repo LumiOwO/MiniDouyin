@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,12 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.shuyu.gsyvideoplayer.utils.NetworkUtils;
 import com.shuyu.gsyvideoplayer.video.base.GSYBaseVideoPlayer;
 
-/**
- * 计算滑动，自动播放的帮助类
- * Created by guoshuyu on 2017/11/2.
- */
-
 public class ScrollCalculatorHelper {
+    private static final String TAG = "ScrollCalculatorHelper";
 
     private int firstVisible = 0;
     private int lastVisible = 0;
@@ -47,6 +44,7 @@ public class ScrollCalculatorHelper {
         if (firstVisible == firstVisibleItem) {
             return;
         }
+        Log.e(TAG, "onScroll: " + visibleItemCount);
         firstVisible = firstVisibleItem;
         lastVisible = lastVisibleItem;
         visibleCount = visibleItemCount;
@@ -64,7 +62,7 @@ public class ScrollCalculatorHelper {
         GSYBaseVideoPlayer gsyBaseVideoPlayer = null;
 
         boolean needPlay = false;
-
+        Log.e(TAG, "playVideo: " + visibleCount);
         for (int i = 0; i < visibleCount; i++) {
             if (layoutManager.getChildAt(i) != null && layoutManager.getChildAt(i).findViewById(playId) != null) {
                 GSYBaseVideoPlayer player = (GSYBaseVideoPlayer) layoutManager.getChildAt(i).findViewById(playId);
@@ -78,6 +76,7 @@ public class ScrollCalculatorHelper {
                             || player.getCurrentPlayer().getCurrentState() == GSYBaseVideoPlayer.CURRENT_STATE_ERROR)) {
                         needPlay = true;
                     }
+                    Log.e(TAG, "playVideo: needPlay " + needPlay);
                     break;
                 }
 
@@ -94,6 +93,7 @@ public class ScrollCalculatorHelper {
                 }
             }
             runnable = new PlayRunnable(gsyBaseVideoPlayer);
+            Log.e(TAG, "playVideo: play ");
             //降低频率
             playHandler.postDelayed(runnable, 400);
         }
@@ -122,9 +122,10 @@ public class ScrollCalculatorHelper {
                 if (rangePosition >= rangeTop && rangePosition <= rangeBottom) {
                     inPosition = true;
                 }
+                Log.e(TAG, "run: inPosotion " + inPosition);
                 if (inPosition) {
-                    startPlayLogic(gsyBaseVideoPlayer, gsyBaseVideoPlayer.getContext());
-                    //gsyBaseVideoPlayer.startPlayLogic();
+//                    startPlayLogic(gsyBaseVideoPlayer, gsyBaseVideoPlayer.getContext());
+                    gsyBaseVideoPlayer.startPlayLogic();
                 }
             }
         }

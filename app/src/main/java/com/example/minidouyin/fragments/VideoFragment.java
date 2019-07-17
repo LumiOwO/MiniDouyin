@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minidouyin.R;
@@ -77,8 +78,8 @@ public class VideoFragment extends Fragment {
 		mRecyclerView.setLayoutManager(linearLayoutManager);
 		mRecyclerAdapter = new VideoRecyclerAdapter(getContext(), mVideoList);
 		mRecyclerView.setAdapter(mRecyclerAdapter);
-//		PagerSnapHelper snapHelper = new PagerSnapHelper();
-//		snapHelper.attachToRecyclerView(mRecyclerView);
+		PagerSnapHelper snapHelper = new PagerSnapHelper();
+		snapHelper.attachToRecyclerView(mRecyclerView);
 
 		//限定范围为屏幕一半的上下偏移180
 		int playTop = CommonUtil.getScreenHeight(getContext()) / 2 - CommonUtil.dip2px(getContext(), 180);
@@ -104,7 +105,7 @@ public class VideoFragment extends Fragment {
 				Log.e(TAG, "onScrolled: " + firstVisibleItem + " " + lastVisibleItem);
 
 				//这是滑动自动播放的代码
-				mScrollCalculatorHelper.onScroll(recyclerView, firstVisibleItem, lastVisibleItem, lastVisibleItem - firstVisibleItem);
+				mScrollCalculatorHelper.onScroll(recyclerView, firstVisibleItem, lastVisibleItem, lastVisibleItem - firstVisibleItem + 1);
 			}
 		});
 	}

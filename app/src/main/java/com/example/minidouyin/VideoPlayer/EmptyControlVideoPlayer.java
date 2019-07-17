@@ -6,11 +6,6 @@ import android.util.AttributeSet;
 import com.example.minidouyin.R;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
-/**
- * 无任何控制ui的播放
- * Created by guoshuyu on 2017/8/6.
- */
-
 public class EmptyControlVideoPlayer extends StandardGSYVideoPlayer {
 
     public EmptyControlVideoPlayer(Context context, Boolean fullFlag) {
