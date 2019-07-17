@@ -33,7 +33,7 @@ dependencies {
 
     implementation 'com.jakewharton:butterknife:10.1.0'
 
-    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
 
     implementation 'com.squareup.retrofit2:retrofit:2.6.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
@@ -47,4 +47,9 @@ dependencies {
     implementation 'me.kaelaela:verticalviewpager:1.0.0@aar'
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-3'
+
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+
+    implementation 'com.shuyu:GSYVideoPlayer:7.0.2'
+
 }
