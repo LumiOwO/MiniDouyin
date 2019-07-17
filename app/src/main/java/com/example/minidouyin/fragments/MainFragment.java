@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,7 +21,8 @@ public class MainFragment extends Fragment {
 
 	private static final int PAGE_COUNT = 2;
 
-	private TextView mPhoto, mSearch;
+	private ImageButton mPhoto;
+	private ImageButton mSearch;
 	private ViewPager mViewPager;
 	private TabLayout mTabLayout;
 

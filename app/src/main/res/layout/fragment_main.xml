@@ -7,11 +7,17 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content">
 
-		<TextView
+		<ImageButton
 			android:id="@+id/fragment_main_tv_photo"
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
-			android:text="photo"
+			android:src="@drawable/camera"
+			android:scaleType="centerInside"
+			android:scaleX="0.7"
+			android:scaleY="0.7"
+			android:paddingEnd="-35dp"
+			android:paddingStart="-35dp"
+			android:background="@null"
 			android:gravity="center" />
 
 		<com.google.android.material.tabs.TabLayout
@@ -20,11 +26,17 @@
 			android:layout_weight="1"
 			android:layout_height="wrap_content" />
 
-		<TextView
+		<ImageButton
 			android:id="@+id/fragment_main_tv_search"
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
-			android:text="search"
+			android:src="@drawable/search"
+			android:scaleType="centerInside"
+			android:scaleX="0.7"
+			android:scaleY="0.7"
+			android:paddingEnd="-35dp"
+			android:paddingStart="-35dp"
+			android:background="@null"
 			android:gravity="center" />
 
 	</LinearLayout>
