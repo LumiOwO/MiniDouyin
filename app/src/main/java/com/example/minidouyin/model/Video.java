@@ -1,5 +1,8 @@
 package com.example.minidouyin.model;
 
+import androidx.room.ColumnInfo;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -9,17 +12,42 @@ import java.util.Date;
 
 public class Video implements Serializable
 {
+	@ColumnInfo(name = "stuid")
+	@SerializedName("student_id")
+	private String mStudentId;
 
-	@SerializedName("student_id") private String mStudentId;
-	@SerializedName("user_name") private String mUsername;
-	@SerializedName("image_url") private String mImageUrl;
-	@SerializedName("video_url") private String mVideoUrl;
+	@ColumnInfo(name = "username")
+	@SerializedName("user_name")
+	private String mUsername;
 
-	@SerializedName("_id") 			private String mId;
-	@SerializedName("createdAt") 	private String mCreatedAt;
-	@SerializedName("updatedAt") 	private String mUpdatedAt;
-	@SerializedName("image_w") 		private String mImageWidth;
-	@SerializedName("image_h") 		private String mImageHeight;
+	@ColumnInfo(name = "image_url")
+	@SerializedName("image_url")
+	private String mImageUrl;
+
+	@ColumnInfo(name = "video_url")
+	@SerializedName("video_url")
+	private String mVideoUrl;
+
+	@PrimaryKey
+	@ColumnInfo(name = "id")
+	@SerializedName("_id")
+	private String mId;
+
+	@ColumnInfo(name = "create_time")
+	@SerializedName("createdAt")
+	private String mCreatedAt;
+
+	@ColumnInfo(name = "update_time")
+	@SerializedName("updatedAt")
+	private String mUpdatedAt;
+
+	@ColumnInfo(name = "image_width")
+	@SerializedName("image_w")
+	private String mImageWidth;
+
+	@ColumnInfo(name = "image_height")
+	@SerializedName("image_h")
+	private String mImageHeight;
 
 	public Video() {
 
