@@ -1,6 +1,7 @@
 package com.example.minidouyin.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,10 @@ import com.example.minidouyin.model.Video;
 import com.example.minidouyin.net.NetManager;
 import com.example.minidouyin.net.response.GetVideosResponse;
 import com.example.minidouyin.utils.ScrollCalculatorHelper;
+import com.scwang.smartrefresh.header.MaterialHeader;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.CommonUtil;
 
@@ -35,6 +40,9 @@ public class VideoFragment extends Fragment {
 
 	private NetManager mNetManager = new NetManager();
 
+	@BindView(R.id.refresh_layout)
+	SmartRefreshLayout mRefreshLayout;
+
 	@BindView(R.id.rv_video)
 	RecyclerView mRecyclerView;
 
@@ -44,6 +52,8 @@ public class VideoFragment extends Fragment {
 
 	private int mStartPosition = 0;
 	private int mPosition;
+
+	private Handler mHandler = new Handler();
 
 
 	@Nullable
@@ -61,8 +71,17 @@ public class VideoFragment extends Fragment {
 				mRecyclerAdapter.notifyDataSetChanged();
 			}
 			Toast.makeText(getContext(), "refresh success", Toast.LENGTH_SHORT).show();
+			mRefreshLayout.finishRefresh();
 			Log.d(TAG, "initVideoList: " + mVideoList.size());
 		});
+
+		mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
+			@Override
+			public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+				mNetManager.execGetFeeds();
+			}
+		});
+		mRefreshLayout.setRefreshHeader(new MaterialHeader(getContext()));
 
 		initVideoList();
 		initRecyclerView();
@@ -82,7 +101,6 @@ public class VideoFragment extends Fragment {
 		PagerSnapHelper snapHelper = new PagerSnapHelper();
 		snapHelper.attachToRecyclerView(mRecyclerView);
 
-		//限定范围为屏幕一半的上下偏移180
 		int playTop = 0;
 		int playBottom = CommonUtil.getScreenHeight(getContext());
 		//自定播放帮助类
@@ -95,6 +113,7 @@ public class VideoFragment extends Fragment {
 			@Override
 			public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 				super.onScrollStateChanged(recyclerView, newState);
+				Log.e(TAG, "onScrollStateChanged");
 				mScrollCalculatorHelper.onScrollStateChanged(recyclerView, newState);
 			}
 
@@ -104,17 +123,16 @@ public class VideoFragment extends Fragment {
 				firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
 				lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
 				Log.e(TAG, "onScrolled: " + firstVisibleItem + " " + lastVisibleItem);
-
-				//这是滑动自动播放的代码
 				mScrollCalculatorHelper.onScroll(recyclerView, firstVisibleItem, lastVisibleItem, lastVisibleItem - firstVisibleItem + 1);
 			}
 		});
 
-		mScrollCalculatorHelper.onScroll(mRecyclerView, 0, 0,  1);
-//		((GSYBaseVideoPlayer)linearLayoutManager.getChildAt(0)).startPlayLogic();
-		Log.e(TAG, "initRecyclerView: <<<<< init");
-		mScrollCalculatorHelper.onScrollStateChanged(mRecyclerView, RecyclerView.SCROLL_STATE_IDLE);
-		Log.e(TAG, "initRecyclerView: >>>>> init");
+		mHandler.postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				mScrollCalculatorHelper.onScrollStateChanged(mRecyclerView, RecyclerView.SCROLL_STATE_IDLE);
+			}
+		}, 1000);
 	}
 
 	private void initVideoList() {
@@ -163,5 +181,7 @@ public class VideoFragment extends Fragment {
 	public void onDestroy() {
 		super.onDestroy();
 		GSYVideoManager.releaseAllVideos();
+		mNetManager.cancelAllCalls();
+		mHandler.removeCallbacksAndMessages(null);
 	}
 }

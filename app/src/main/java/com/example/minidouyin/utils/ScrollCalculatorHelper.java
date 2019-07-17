@@ -133,11 +133,11 @@ public class ScrollCalculatorHelper {
 
     /***************************************自动播放的点击播放确认******************************************/
     private void startPlayLogic(GSYBaseVideoPlayer gsyBaseVideoPlayer, Context context) {
-        if (!com.shuyu.gsyvideoplayer.utils.CommonUtil.isWifiConnected(context)) {
-            //这里判断是否wifi
-            showWifiDialog(gsyBaseVideoPlayer, context);
-            return;
-        }
+//        if (!com.shuyu.gsyvideoplayer.utils.CommonUtil.isWifiConnected(context)) {
+//            //这里判断是否wifi
+//            showWifiDialog(gsyBaseVideoPlayer, context);
+//            return;
+//        }
         gsyBaseVideoPlayer.startPlayLogic();
     }
 

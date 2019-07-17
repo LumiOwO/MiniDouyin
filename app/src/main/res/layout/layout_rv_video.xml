@@ -6,7 +6,7 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent">
 
-	<com.example.minidouyin.VideoPlayer.EmptyControlVideoPlayer
+	<com.example.minidouyin.VideoPlayer.VideoPlayer
 		android:id="@+id/rv_video_gsyPlayer"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

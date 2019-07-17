@@ -3,6 +3,9 @@ package com.example.minidouyin.net;
 import com.example.minidouyin.net.response.GetVideosResponse;
 import com.example.minidouyin.net.response.PostVideoResponse;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import okhttp3.MultipartBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -19,6 +22,7 @@ public class NetManager
 	// listener
 	private OnNetListener mGetListener;
 	private OnNetListener mPostListener;
+	private List<Call> mCallList = new ArrayList<>();
 
 	public NetManager()
 	{
@@ -56,20 +60,30 @@ public class NetManager
 
 	private <T> void enqueueCall(Call<T> call, OnNetListener listener)
 	{
+		mCallList.add(call);
 		call.enqueue(new Callback<T>()
 		{
 			@Override
 			public void onResponse(Call<T> call, Response<T> response)
 			{
+				mCallList.remove(call);
 				listener.exec(response);
 			}
 
 			@Override
 			public void onFailure(Call<T> call, Throwable t)
 			{
+				mCallList.remove(call);
 				t.printStackTrace();
 			}
 		});
+	}
+
+	public void cancelAllCalls() {
+		for (Call call : mCallList) {
+			call.cancel();
+		}
+		mCallList.clear();
 	}
 
 }

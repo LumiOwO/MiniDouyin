@@ -8,8 +8,9 @@ import android.widget.ImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.minidouyin.R;
-import com.example.minidouyin.VideoPlayer.EmptyControlVideoPlayer;
+import com.example.minidouyin.VideoPlayer.VideoPlayer;
 import com.example.minidouyin.model.Video;
 import com.sackcentury.shinebuttonlib.ShineButton;
 import com.shuyu.gsyvideoplayer.builder.GSYVideoOptionBuilder;
@@ -25,7 +26,7 @@ public class VideoRecyclerItemHolder extends RecyclerView.ViewHolder {
     protected Context context = null;
 
     @BindView(R.id.rv_video_gsyPlayer)
-    EmptyControlVideoPlayer gsyVideoPlayer;
+    VideoPlayer gsyVideoPlayer;
 
     @BindView(R.id.rv_video_btn_follow)
     ShineButton mBtnFollow;
@@ -60,7 +61,14 @@ public class VideoRecyclerItemHolder extends RecyclerView.ViewHolder {
         gsyVideoOptionBuilder.setUrl(video.getVideoUrl()).build(gsyVideoPlayer);
         gsyVideoPlayer.setLooping(true);
         ImageView imageView = new ImageView(context);
-        Glide.with(context).load(video.getImageUrl()).into(imageView);
+        Glide.with(context)
+                .setDefaultRequestOptions(
+                        new RequestOptions()
+                                .frame(0)
+                                .centerCrop()
+                )
+                .load(video.getVideoUrl())
+                .into(imageView);
         gsyVideoPlayer.setThumbImageView(imageView);
 
     }
