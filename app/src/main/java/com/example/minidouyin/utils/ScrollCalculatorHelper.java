@@ -41,7 +41,7 @@ public class ScrollCalculatorHelper {
     }
 
     public void onScroll(RecyclerView view, int firstVisibleItem, int lastVisibleItem, int visibleItemCount) {
-        if (firstVisible == firstVisibleItem) {
+        if (firstVisible == firstVisibleItem && lastVisible == lastVisibleItem && visibleCount  == visibleItemCount) {
             return;
         }
         Log.e(TAG, "onScroll: " + visibleItemCount);
@@ -124,8 +124,7 @@ public class ScrollCalculatorHelper {
                 }
                 Log.e(TAG, "run: inPosotion " + inPosition);
                 if (inPosition) {
-//                    startPlayLogic(gsyBaseVideoPlayer, gsyBaseVideoPlayer.getContext());
-                    gsyBaseVideoPlayer.startPlayLogic();
+                    startPlayLogic(gsyBaseVideoPlayer, gsyBaseVideoPlayer.getContext());
                 }
             }
         }

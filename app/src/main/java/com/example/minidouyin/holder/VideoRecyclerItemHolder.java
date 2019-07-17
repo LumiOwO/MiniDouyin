@@ -7,6 +7,7 @@ import android.widget.ImageView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.minidouyin.R;
 import com.example.minidouyin.VideoPlayer.EmptyControlVideoPlayer;
 import com.example.minidouyin.model.Video;
@@ -54,12 +55,13 @@ public class VideoRecyclerItemHolder extends RecyclerView.ViewHolder {
         gsyVideoOptionBuilder = new GSYVideoOptionBuilder();
     }
 
-    public void bind(final int position, Video video) {
+    public void bind(Context context, final int position, Video video) {
 
-        //防止错位，离开释放
-        //gsyVideoPlayer.initUIState();
         gsyVideoOptionBuilder.setUrl(video.getVideoUrl()).build(gsyVideoPlayer);
-//        gsyVideoPlayer.startPlayLogic();
+        gsyVideoPlayer.setLooping(true);
+        ImageView imageView = new ImageView(context);
+        Glide.with(context).load(video.getImageUrl()).into(imageView);
+        gsyVideoPlayer.setThumbImageView(imageView);
 
     }
 

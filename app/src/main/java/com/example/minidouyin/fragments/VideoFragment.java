@@ -43,6 +43,7 @@ public class VideoFragment extends Fragment {
 	private ScrollCalculatorHelper mScrollCalculatorHelper;
 
 	private int mStartPosition = 0;
+	private int mPosition;
 
 
 	@Nullable
@@ -82,8 +83,8 @@ public class VideoFragment extends Fragment {
 		snapHelper.attachToRecyclerView(mRecyclerView);
 
 		//限定范围为屏幕一半的上下偏移180
-		int playTop = CommonUtil.getScreenHeight(getContext()) / 2 - CommonUtil.dip2px(getContext(), 180);
-		int playBottom = CommonUtil.getScreenHeight(getContext()) / 2 + CommonUtil.dip2px(getContext(), 180);
+		int playTop = 0;
+		int playBottom = CommonUtil.getScreenHeight(getContext());
 		//自定播放帮助类
 		mScrollCalculatorHelper = new ScrollCalculatorHelper(R.id.rv_video_gsyPlayer, playTop, playBottom);
 
@@ -108,6 +109,12 @@ public class VideoFragment extends Fragment {
 				mScrollCalculatorHelper.onScroll(recyclerView, firstVisibleItem, lastVisibleItem, lastVisibleItem - firstVisibleItem + 1);
 			}
 		});
+
+		mScrollCalculatorHelper.onScroll(mRecyclerView, 0, 0,  1);
+//		((GSYBaseVideoPlayer)linearLayoutManager.getChildAt(0)).startPlayLogic();
+		Log.e(TAG, "initRecyclerView: <<<<< init");
+		mScrollCalculatorHelper.onScrollStateChanged(mRecyclerView, RecyclerView.SCROLL_STATE_IDLE);
+		Log.e(TAG, "initRecyclerView: >>>>> init");
 	}
 
 	private void initVideoList() {

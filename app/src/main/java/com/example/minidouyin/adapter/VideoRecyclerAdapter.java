@@ -42,7 +42,7 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         VideoRecyclerItemHolder recyclerItemViewHolder = (VideoRecyclerItemHolder) holder;
         recyclerItemViewHolder.setRecyclerBaseAdapter(this);
-        recyclerItemViewHolder.bind(position, mItemDataList.get(position));
+        recyclerItemViewHolder.bind(mContext, position, mItemDataList.get(position));
     }
 
     @Override
