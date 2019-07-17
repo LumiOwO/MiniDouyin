@@ -1,6 +1,8 @@
 package com.example.minidouyin;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,15 +57,15 @@ public class MainActivity extends AppCompatActivity {
 		});
 
 		mTabLayout.setupWithViewPager(mViewPager);
+	}
 
-//		new Thread() {
-//			@Override
-//			public void run() {
-//				super.run();
-//				while (true) {
-//
-//				}
-//			}
-//		}.start();
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == MainFragment.REQUEST_CODE_FOR_CAMERA && resultCode == RESULT_OK)
+		{
+			Toast.makeText(this, "录制成功", Toast.LENGTH_SHORT).show();
+		}
 	}
 }

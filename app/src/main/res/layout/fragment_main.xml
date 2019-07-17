@@ -12,11 +12,8 @@
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
 			android:src="@drawable/camera"
+			android:layout_margin="10dp"
 			android:scaleType="centerInside"
-			android:scaleX="0.7"
-			android:scaleY="0.7"
-			android:paddingEnd="-35dp"
-			android:paddingStart="-35dp"
 			android:background="@null"
 			android:gravity="center" />
 
@@ -31,11 +28,8 @@
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
 			android:src="@drawable/search"
+			android:layout_margin="10dp"
 			android:scaleType="centerInside"
-			android:scaleX="0.7"
-			android:scaleY="0.7"
-			android:paddingEnd="-35dp"
-			android:paddingStart="-35dp"
 			android:background="@null"
 			android:gravity="center" />
 

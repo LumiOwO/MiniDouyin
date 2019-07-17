@@ -19,6 +19,8 @@ import com.google.android.material.tabs.TabLayout;
 
 public class MainFragment extends Fragment {
 
+	public static final int REQUEST_CODE_FOR_CAMERA = 1001;
+
 	private static final int PAGE_COUNT = 2;
 
 	private ImageButton mPhoto;
@@ -39,7 +41,7 @@ public class MainFragment extends Fragment {
 		mPhoto.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				CameraActivity.launch(getActivity());
+				CameraActivity.launch(getActivity(), REQUEST_CODE_FOR_CAMERA);
 			}
 		});
 
