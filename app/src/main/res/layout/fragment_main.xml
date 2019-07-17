@@ -11,7 +11,7 @@
 			android:id="@+id/fragment_main_tv_photo"
 			android:layout_width="wrap_content"
 			android:layout_height="match_parent"
-			android:src="@drawable/camera"
+			android:src="@drawable/newpost"
 			android:layout_margin="10dp"
 			android:scaleType="centerInside"
 			android:background="@null"
