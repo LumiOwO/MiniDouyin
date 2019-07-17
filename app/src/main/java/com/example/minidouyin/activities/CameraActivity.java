@@ -11,6 +11,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -21,6 +22,10 @@ import com.cjt2325.cameralibrary.listener.ClickListener;
 import com.cjt2325.cameralibrary.listener.ErrorListener;
 import com.cjt2325.cameralibrary.listener.JCameraListener;
 import com.example.minidouyin.R;
+import com.example.minidouyin.net.NetManager;
+import com.example.minidouyin.net.OnNetListener;
+import com.example.minidouyin.net.response.PostVideoResponse;
+import com.example.minidouyin.utils.ResourceUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -29,7 +34,21 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Response;
+
 public class CameraActivity extends AppCompatActivity {
+
+	private static final String DEFAULT_SID = "7777777";
+	private static final String DEFAULT_USERNAME = "user007";
+
+	private static final int CODE_FOR_PICK_PHOTO = 999;
+	private static final int CODE_FOR_PICK_VIDEO = 998;
+
+	public static final int RESULT_PERMISSION_DENIED = 777;
+	public static final int RESULT_ERROR = 404;
 
 	private static final int CODE_FOR_CAMERA_PERMISSION = 251;
 	private static String[] permissions = {
@@ -44,6 +63,13 @@ public class CameraActivity extends AppCompatActivity {
 
 	private JCameraView mCameraView;
 
+	enum CameraState {
+		PHOTO, VIDEO
+	};
+	private CameraState mCameraState;
+	private Uri mSelectedImage;
+	private Uri mSelectedVideo;
+
 	public static void launch(Activity activity, int requestCode) {
 		Intent intent = new Intent(activity, CameraActivity.class);
 		activity.startActivityForResult(intent, requestCode);
@@ -55,11 +81,43 @@ public class CameraActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_camera);
 		mCameraView = findViewById(R.id.jcameraview);
 
-		initCamera();
-
 		if (!permissonAllGranted()) {
 			ActivityCompat.requestPermissions(
 					this, permissions, CODE_FOR_CAMERA_PERMISSION);
+		} else {
+			initCamera();
+			toPhotoState();
+		}
+	}
+
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
+	{
+		super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+		if (requestCode == CODE_FOR_CAMERA_PERMISSION) {
+			if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				initCamera();
+				toPhotoState();
+
+			} else {
+				finishCameraActivity(RESULT_PERMISSION_DENIED);
+			}
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+	{
+		super.onActivityResult(requestCode, resultCode, data);
+		if (resultCode == RESULT_OK && data != null) {
+			if (requestCode == CODE_FOR_PICK_PHOTO) {
+				mSelectedImage = data.getData();
+				toVideoState();
+
+			} else if (requestCode == CODE_FOR_PICK_VIDEO) {
+				mSelectedVideo = data.getData();
+				postVideo();
+			}
 		}
 	}
 
@@ -104,9 +162,6 @@ public class CameraActivity extends AppCompatActivity {
 		mCameraView.setJCameraLisenter(new JCameraListener() {
 			@Override
 			public void captureSuccess(Bitmap bitmap) {
-				//获取图片bitmap
-				Log.i("JCameraView", "bitmap = " + bitmap.getWidth());
-
 				try {
 					String timeStamp = new SimpleDateFormat(
 							"yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
@@ -118,23 +173,23 @@ public class CameraActivity extends AppCompatActivity {
 					fos.flush();
 					fos.close();
 
-					notifySystemAlbum(Uri.fromFile(file));
+					mSelectedImage = Uri.fromFile(file);
+					notifySystemAlbum(mSelectedImage);
 
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
 
-				finishCameraActivity(RESULT_OK);
+				toVideoState();
 			}
 			@Override
 			public void recordSuccess(String url, Bitmap firstFrame) {
-				//获取视频路径
-				Log.i("CJT", "url = " + url);
 
 				File file = new File(url);
-				notifySystemAlbum(Uri.fromFile(file));
+				mSelectedVideo = Uri.fromFile(file);
+				notifySystemAlbum(mSelectedVideo);
 
-				finishCameraActivity(RESULT_OK);
+				postVideo();
 			}
 		});
 
@@ -145,11 +200,27 @@ public class CameraActivity extends AppCompatActivity {
 				finishCameraActivity(RESULT_CANCELED);
 			}
 		});
+
 		//右边按钮点击事件
 		mCameraView.setRightClickListener(new ClickListener() {
 			@Override
 			public void onClick() {
-				makeToast("right button");
+				if(mCameraState == CameraState.PHOTO) {
+					Intent intent = new Intent();
+					intent.setType("image/*");
+					intent.setAction(Intent.ACTION_GET_CONTENT);
+					startActivityForResult(
+							Intent.createChooser(intent, "Select Picture"),
+							CODE_FOR_PICK_PHOTO);
+
+				} else if(mCameraState == CameraState.VIDEO) {
+					Intent intent = new Intent();
+					intent.setType("video/*");
+					intent.setAction(Intent.ACTION_GET_CONTENT);
+					startActivityForResult(
+							Intent.createChooser(intent, "Select Video"),
+							CODE_FOR_PICK_VIDEO);
+				}
 			}
 		});
 	}
@@ -160,15 +231,67 @@ public class CameraActivity extends AppCompatActivity {
 		CameraActivity.this.finish();
 	}
 
-	private void makeToast(String text)
-	{
-		Toast.makeText(CameraActivity.this, text, Toast.LENGTH_SHORT).show();
-	}
-
 	private void notifySystemAlbum(Uri uri)
 	{
 		Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 		intent.setData(uri);
 		sendBroadcast(intent);
+	}
+
+	private void toPhotoState()
+	{
+		mCameraState = CameraState.PHOTO;
+		mCameraView.setFeatures(JCameraView.BUTTON_STATE_ONLY_CAPTURE);
+
+		makeToast("现在请上传一张封面图片~");
+	}
+
+	private void toVideoState()
+	{
+		mCameraState = CameraState.VIDEO;
+		mCameraView.setFeatures(JCameraView.BUTTON_STATE_ONLY_RECORDER);
+		mCameraView.onResume();
+
+		makeToast("现在请上传您的视频~");
+	}
+
+	private void postVideo()
+	{
+		if(mSelectedImage == null && mSelectedVideo == null)
+			finishCameraActivity(RESULT_ERROR);
+
+		NetManager netManager = new NetManager();
+		netManager.setOnPostListener(new OnNetListener()
+		{
+			@Override
+			public void exec(Response<?> res)
+			{
+				// create videos
+				PostVideoResponse response = (PostVideoResponse)res.body();
+				if(!response.isSuccess())
+					finishCameraActivity(RESULT_ERROR);
+				else
+					finishCameraActivity(RESULT_OK);
+			}
+		});
+
+		MultipartBody.Part coverImagePart = getMultipartFromUri("cover_image", mSelectedImage);
+		MultipartBody.Part videoPart = getMultipartFromUri("video", mSelectedVideo);
+		netManager.execPostFeed(
+				DEFAULT_SID, DEFAULT_USERNAME,
+				coverImagePart, videoPart
+		);
+
+	}
+
+	private MultipartBody.Part getMultipartFromUri(String name, Uri uri) {
+		File f = new File(ResourceUtils.getRealPath(this, uri));
+		RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), f);
+		return MultipartBody.Part.createFormData(name, f.getName(), requestFile);
+	}
+
+	private void makeToast(String text)
+	{
+		Toast.makeText(this, text, Toast.LENGTH_LONG).show();
 	}
 }
