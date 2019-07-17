@@ -1,9 +1,5 @@
 package com.example.minidouyin.fragments.nearby;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.ContextWrapper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minidouyin.R;
-import com.example.minidouyin.activities.PlayActivity;
+import com.example.minidouyin.model.Video;
 import com.example.minidouyin.net.NetManager;
 import com.example.minidouyin.net.OnNetListener;
 import com.example.minidouyin.net.response.GetVideosResponse;
-import com.example.minidouyin.model.Video;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +42,7 @@ public class NearbyVideoAdapter extends RecyclerView.Adapter
 					GetVideosResponse.Feed feed = feeds.get(i);
 					Video video = new Video();
 
-					video.setUserName(feed.getUser_name());
+					video.setUsername(feed.getUser_name());
 					video.setStudentId(feed.getStudent_id());
 					video.setImageUrl(feed.getImage_url());
 					video.setVideoUrl(feed.getVideo_url());
