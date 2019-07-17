@@ -72,6 +72,7 @@ public class VideoFragment extends Fragment {
 			}
 			Toast.makeText(getContext(), "refresh success", Toast.LENGTH_SHORT).show();
 			mRefreshLayout.finishRefresh();
+			playFirstVideo();
 			Log.d(TAG, "initVideoList: " + mVideoList.size());
 		});
 
@@ -127,6 +128,10 @@ public class VideoFragment extends Fragment {
 			}
 		});
 
+		playFirstVideo();
+	}
+
+	private void playFirstVideo() {
 		mHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
