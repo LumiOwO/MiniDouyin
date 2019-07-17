@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -22,6 +23,11 @@ import com.cjt2325.cameralibrary.listener.JCameraListener;
 import com.example.minidouyin.R;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class CameraActivity extends AppCompatActivity {
 
@@ -32,7 +38,9 @@ public class CameraActivity extends AppCompatActivity {
 			Manifest.permission.WRITE_EXTERNAL_STORAGE,
 			Manifest.permission.WRITE_SETTINGS,
 	};
-	private static final String STORAGE_PATH = "MiniDouyin";
+	private static final String STORAGE_PATH =
+			Environment.getExternalStorageDirectory().getPath()
+					+ File.separator + "MiniDouyin";
 
 	private JCameraView mCameraView;
 
@@ -71,9 +79,7 @@ public class CameraActivity extends AppCompatActivity {
 	private void initCamera()
 	{
 		// 设置视频保存路径
-		mCameraView.setSaveVideoPath(
-				Environment.getExternalStorageDirectory().getPath()
-						+ File.separator + STORAGE_PATH);
+		mCameraView.setSaveVideoPath(STORAGE_PATH);
 
 		// 设置只能录像或只能拍照或两种都可以（默认两种都可以）
 		mCameraView.setFeatures(JCameraView.BUTTON_STATE_BOTH);
@@ -100,12 +106,34 @@ public class CameraActivity extends AppCompatActivity {
 			public void captureSuccess(Bitmap bitmap) {
 				//获取图片bitmap
 				Log.i("JCameraView", "bitmap = " + bitmap.getWidth());
+
+				try {
+					String timeStamp = new SimpleDateFormat(
+							"yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+
+					File file = new File(STORAGE_PATH,
+							File.separator + "IMG_" + timeStamp + ".jpg");
+					FileOutputStream fos = new FileOutputStream(file);
+					bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+					fos.flush();
+					fos.close();
+
+					notifySystemAlbum(Uri.fromFile(file));
+
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
 				finishCameraActivity(RESULT_OK);
 			}
 			@Override
 			public void recordSuccess(String url, Bitmap firstFrame) {
 				//获取视频路径
 				Log.i("CJT", "url = " + url);
+
+				File file = new File(url);
+				notifySystemAlbum(Uri.fromFile(file));
+
 				finishCameraActivity(RESULT_OK);
 			}
 		});
@@ -135,5 +163,12 @@ public class CameraActivity extends AppCompatActivity {
 	private void makeToast(String text)
 	{
 		Toast.makeText(CameraActivity.this, text, Toast.LENGTH_SHORT).show();
+	}
+
+	private void notifySystemAlbum(Uri uri)
+	{
+		Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+		intent.setData(uri);
+		sendBroadcast(intent);
 	}
 }
