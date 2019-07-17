@@ -21,13 +21,11 @@ import retrofit2.Response;
 public class NearbyVideoAdapter extends RecyclerView.Adapter
 {
 	// content
-	private List<Video> mList;
+	private List<Video> mList = new ArrayList<>();
 	private NetManager mNetManager = new NetManager();
 
 	public NearbyVideoAdapter()
 	{
-		mList = new ArrayList<Video>();
-
 		mNetManager.setOnGetListener(new OnNetListener()
 		{
 			@Override
@@ -35,20 +33,7 @@ public class NearbyVideoAdapter extends RecyclerView.Adapter
 			{
 				// create videos
 				GetVideosResponse response = (GetVideosResponse)res.body();
-				List<GetVideosResponse.Feed> feeds = response.getFeeds();
-				mList.clear();
-				for(int i=0; i<feeds.size(); i++)
-				{
-					GetVideosResponse.Feed feed = feeds.get(i);
-					Video video = new Video();
-
-					video.setUsername(feed.getUser_name());
-					video.setStudentId(feed.getStudent_id());
-					video.setImageUrl(feed.getImage_url());
-					video.setVideoUrl(feed.getVideo_url());
-
-					mList.add(video);
-				}
+				mList = response.getVideos();
 				// update view
 				notifyDataSetChanged();
 			}
