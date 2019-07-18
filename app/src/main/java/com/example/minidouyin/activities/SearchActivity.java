@@ -104,7 +104,7 @@ public class SearchActivity extends AppCompatActivity {
 				mMostRankAdapter.setNewData(lists);
 			}
 		});
-		mDBHelper.executeGetVideoCountByOne();
+
 		Log.d("setOnGetVideoCountByOneListener", "over");
 
 		// hot
@@ -131,7 +131,6 @@ public class SearchActivity extends AppCompatActivity {
 				mHotRankAdapter.setNewData(videoRecords.stream().map(VideoRecord::getVideo).collect(Collectors.toList()));
 			}
 		});
-		mDBHelper.executeGetVideoByHotValueRank();
 
 		mBackButton.setOnClickListener(mBackToMainListener);
 
@@ -154,6 +153,14 @@ public class SearchActivity extends AppCompatActivity {
 				}
 			}
 		});
+	}
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		mDBHelper.executeGetVideoCountByOne();
+		mDBHelper.executeGetVideoByHotValueRank();
 	}
 
 	@Override

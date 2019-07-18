@@ -88,8 +88,7 @@ public class VideoRecyclerItemHolder extends RecyclerView.ViewHolder {
 
                 Video video = getRecyclerBaseAdapter().getData().get(getAdapterPosition());
 
-                VideoRecord videoRecord = new VideoRecord(video, hotValue + 1);
-                mDatabaseHelper.executeUpdateVideo(videoRecord);
+                mDatabaseHelper.executeHotValueIncrement(video.getId());
             }
         });
     }

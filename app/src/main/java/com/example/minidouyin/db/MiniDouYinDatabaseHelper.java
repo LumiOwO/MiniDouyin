@@ -494,16 +494,16 @@ public class MiniDouYinDatabaseHelper {
 		return (HotValueIncrementTask) task.execute(videoId);
 	}
 
-	public class HotValueIncrementTask extends AsyncTask<String, Integer, Long> {
+	public class HotValueIncrementTask extends AsyncTask<String, Integer, Integer> {
 
 		@Override
-		protected Long doInBackground(String... videoIds) {
+		protected Integer doInBackground(String... videoIds) {
 			return getDatabase(mContext).videoDao().hotValueIncrement(videoIds[0]);
 		}
 
 		@Override
-		protected void onPostExecute(Long aLong) {
-			super.onPostExecute(aLong);
+		protected void onPostExecute(Integer aInt) {
+			super.onPostExecute(aInt);
 			mAsyncTasks.remove(this);
 		}
 	}

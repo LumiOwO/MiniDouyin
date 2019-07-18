@@ -141,7 +141,6 @@ public class VideoFragment extends Fragment {
 				HistoryRecord historyRecord = new HistoryRecord(CurrentUser.getStudentID(), mVideoList.get(firstVisibleItem).getId(), sdf.format(new Date()));
 				mMiniDouYinDatabaseHelper.executeInsertHistory(historyRecord);
 
-				Log.d("onScrollStateChanged", "scroll");
 			}
 
 			@Override
