@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minidouyin.R;
 import com.example.minidouyin.adapter.VideoRecyclerAdapter;
+import com.example.minidouyin.db.HistoryRecord;
 import com.example.minidouyin.db.MiniDouYinDatabaseHelper;
 import com.example.minidouyin.model.Video;
 import com.example.minidouyin.net.NetManager;
@@ -30,7 +31,9 @@ import com.shuyu.gsyvideoplayer.GSYVideoManager;
 import com.shuyu.gsyvideoplayer.utils.CommonUtil;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -52,13 +55,13 @@ public class VideoFragment extends Fragment {
 	private ScrollCalculatorHelper mScrollCalculatorHelper;
 
 	private int mStartPosition = 0;
-	private int mPosition;
 
 	private Handler mHandler = new Handler();
 
 	// database
 	private MiniDouYinDatabaseHelper mMiniDouYinDatabaseHelper = new MiniDouYinDatabaseHelper(getContext());
 	private MiniDouYinDatabaseHelper.InsertVideoRecordsTask mInsertVideoRecordsTask;
+	private MiniDouYinDatabaseHelper.InsertHistoryRecordTask mInsertHistoryRecordTask;
 
 	@Nullable
 	@Override
@@ -120,8 +123,12 @@ public class VideoFragment extends Fragment {
 			@Override
 			public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 				super.onScrollStateChanged(recyclerView, newState);
-//				Log.e(TAG, "onScrollStateChanged");
 				mScrollCalculatorHelper.onScrollStateChanged(recyclerView, newState);
+
+				firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				HistoryRecord historyRecord = new HistoryRecord("", mVideoList.get(firstVisibleItem).getId(), sdf.format(new Date()));
+				mInsertHistoryRecordTask = mMiniDouYinDatabaseHelper.executeInsertHistoryRecord(historyRecord);
 			}
 
 			@Override
@@ -129,7 +136,6 @@ public class VideoFragment extends Fragment {
 				super.onScrolled(recyclerView, dx, dy);
 				firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
 				lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-//				Log.e(TAG, "onScrolled: " + firstVisibleItem + " " + lastVisibleItem);
 				mScrollCalculatorHelper.onScroll(recyclerView, firstVisibleItem, lastVisibleItem, lastVisibleItem - firstVisibleItem + 1);
 			}
 		});
@@ -196,6 +202,9 @@ public class VideoFragment extends Fragment {
 		mHandler.removeCallbacksAndMessages(null);
 		if (mInsertVideoRecordsTask != null && !mInsertVideoRecordsTask.isCancelled()) {
 			mInsertVideoRecordsTask.cancel(true);
+		}
+		if (mInsertHistoryRecordTask != null && !mInsertHistoryRecordTask.isCancelled()) {
+			mInsertHistoryRecordTask.cancel(true);
 		}
 	}
 

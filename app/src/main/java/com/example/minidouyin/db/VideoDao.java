@@ -14,7 +14,7 @@ import java.util.List;
 public interface VideoDao {
 
 	@Query("select stuid, count(id) as video_count from videos group by stuid order by count(id) desc")
-	public List<StudentVideoCount> getVideoCountByOne();
+	public List<StudentVideoCountTuple> getVideoCountByOne();
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	public Long insertVideoRecord(VideoRecord videoRecord);

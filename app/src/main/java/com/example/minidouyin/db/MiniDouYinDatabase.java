@@ -3,8 +3,9 @@ package com.example.minidouyin.db;
 import androidx.room.Database;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {VideoRecord.class}, version = 1, exportSchema = false)
+@Database(entities = {VideoRecord.class, HistoryDao.class}, version = 1)
 public abstract class MiniDouYinDatabase extends RoomDatabase {
 	public abstract VideoDao videoDao();
+	public abstract HistoryDao historyDao();
 
 }

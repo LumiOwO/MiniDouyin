@@ -12,7 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.minidouyin.R;
-import com.example.minidouyin.db.StudentVideoCount;
+import com.example.minidouyin.db.StudentVideoCountTuple;
 import com.example.minidouyin.db.MiniDouYinDatabaseHelper;
 
 import java.util.List;
@@ -37,12 +37,12 @@ public class SearchFragment extends Fragment {
 
 		ButterKnife.bind(this, view);
 
-		mDatabaseHelper.setOnGetAllHotValueListener(new MiniDouYinDatabaseHelper.OnGetAllHotValueListener() {
+		mDatabaseHelper.setOnGetVideoCountByOneListener(new MiniDouYinDatabaseHelper.OnGetVideoCountByOneListener() {
 			@Override
-			public void run(List<StudentVideoCount> lists) {
+			public void run(List<StudentVideoCountTuple> lists) {
 				int total = 0;
 				StringBuilder str = new StringBuilder();
-				for (StudentVideoCount student : lists) {
+				for (StudentVideoCountTuple student : lists) {
 					total += student.getVideoCount();
 					str.append(student.getStudentId()).append(" ").append(student.getVideoCount() + "").append("\n");
 				}

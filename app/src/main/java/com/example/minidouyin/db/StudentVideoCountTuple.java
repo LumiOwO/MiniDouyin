@@ -2,7 +2,7 @@ package com.example.minidouyin.db;
 
 import androidx.room.ColumnInfo;
 
-public class StudentVideoCount {
+public class StudentVideoCountTuple {
 
 	@ColumnInfo(name = "stuid")
 	private String mStudentId;
