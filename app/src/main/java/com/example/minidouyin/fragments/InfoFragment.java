@@ -2,10 +2,12 @@ package com.example.minidouyin.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,6 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.minidouyin.R;
 import com.example.minidouyin.activities.PlayActivity;
@@ -46,6 +49,7 @@ public class InfoFragment extends Fragment
 	private TextView mStudentID_editable;
 	private Button mUsername_editBtn;
 	private Button mStudentID_editBtn;
+	private ImageButton mDelete_History_Btn;
 
 	@Nullable
 	@Override
@@ -63,13 +67,22 @@ public class InfoFragment extends Fragment
 		// set edit button
 		mStudentID_editBtn = view.findViewById(R.id.btn_edit_studentID);
 		mUsername_editBtn = view.findViewById(R.id.btn_edit_username);
+		mDelete_History_Btn = view.findViewById(R.id.btn_delete_history);
 
 		mStudentID_editBtn.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
 			public void onClick(View v)
 			{
-				setCurrentUserInfo();
+//				new MaterialDialog.Builder(getActivity())
+//					.inputType(InputType.TYPE_CLASS_NUMBER)
+//					.input(getString(R.string.duration_hint), durationSelector.getText(), new MaterialDialog.InputCallback() {
+//						@Override
+//						public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+//							onDurationChanged(input.toString());
+//						}
+//					})
+//					.show();
 			}
 		});
 
@@ -79,6 +92,15 @@ public class InfoFragment extends Fragment
 			public void onClick(View v)
 			{
 				setCurrentUserInfo();
+			}
+		});
+
+		mDelete_History_Btn.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+
 			}
 		});
 

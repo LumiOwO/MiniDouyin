@@ -84,11 +84,11 @@ public class VideoRecyclerItemHolder extends RecyclerView.ViewHolder {
                     mBtnLike.setChecked(false);
 
                 int hotValue = (int)(Float.parseFloat(mHotValue.getText().toString()) * 10);
-                updateHotValue(hotValue + 1);
+//                updateHotValue(hotValue + 1);
 
                 Video video = getRecyclerBaseAdapter().getData().get(getAdapterPosition());
 
-//                mDatabaseHelper.executeInsertVideoRecords();
+                mDatabaseHelper.executeHotValueIncrement(video.getId());
             }
         });
     }
