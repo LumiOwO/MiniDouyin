@@ -465,10 +465,10 @@ public class MiniDouYinDatabaseHelper {
 	/*
 	 *
 	 * */
-	public UpdateVideoTask executeUpdateVideo(VideoRecord videoRecord) {
-		UpdateVideoTask task = new UpdateVideoTask();
+	public HotValueIncrementTask executeUpdateVideo(VideoRecord videoRecord) {
+		HotValueIncrementTask task = new HotValueIncrementTask();
 		mAsyncTasks.add(task);
-		return (UpdateVideoTask) task.execute(videoRecord);
+		return (HotValueIncrementTask) task.execute(videoRecord);
 	}
 
 	public class UpdateVideoTask extends AsyncTask<VideoRecord, Integer, Integer> {
@@ -481,6 +481,29 @@ public class MiniDouYinDatabaseHelper {
 		@Override
 		protected void onPostExecute(Integer integer) {
 			super.onPostExecute(integer);
+			mAsyncTasks.remove(this);
+		}
+	}
+
+	/*
+	 *
+	 * */
+	public HotValueIncrementTask executeHotValueIncrement(String videoId) {
+		HotValueIncrementTask task = new HotValueIncrementTask();
+		mAsyncTasks.add(task);
+		return (HotValueIncrementTask) task.execute(videoId);
+	}
+
+	public class HotValueIncrementTask extends AsyncTask<String, Integer, Long> {
+
+		@Override
+		protected Long doInBackground(String... videoIds) {
+			return getDatabase(mContext).videoDao().hotValueIncrement(videoIds[0]);
+		}
+
+		@Override
+		protected void onPostExecute(Long aLong) {
+			super.onPostExecute(aLong);
 			mAsyncTasks.remove(this);
 		}
 	}
