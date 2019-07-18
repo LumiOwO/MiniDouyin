@@ -465,10 +465,10 @@ public class MiniDouYinDatabaseHelper {
 	/*
 	 *
 	 * */
-	public HotValueIncrementTask executeUpdateVideo(VideoRecord videoRecord) {
-		HotValueIncrementTask task = new HotValueIncrementTask();
+	public UpdateVideoTask executeUpdateVideo(VideoRecord videoRecord) {
+		UpdateVideoTask task = new UpdateVideoTask();
 		mAsyncTasks.add(task);
-		return (HotValueIncrementTask) task.execute(videoRecord);
+		return (UpdateVideoTask) task.execute(videoRecord);
 	}
 
 	public class UpdateVideoTask extends AsyncTask<VideoRecord, Integer, Integer> {
