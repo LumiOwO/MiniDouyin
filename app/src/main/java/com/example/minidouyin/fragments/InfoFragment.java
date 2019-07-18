@@ -118,16 +118,17 @@ public class InfoFragment extends Fragment
 			@Override
 			public void onClick(View v)
 			{
-				List<Video> videos = mHistory.getData();
-				for(int i=0; i<videos.size(); i++)
-				{
-					HistoryRecord record = new HistoryRecord(
-							CurrentUser.getStudentID(),
-							videos.get(i).getId(),
-							mHistoryRecords.get(i).getTime());
-
-					mDBHelperHistory.executeDeleteHistory(record);
-				}
+//				List<Video> videos = mHistory.getData();
+//				for(int i=0; i<videos.size(); i++)
+//				{
+//					HistoryRecord record = new HistoryRecord(
+//							CurrentUser.getStudentID(),
+//							videos.get(i).getId(),
+//							mHistoryRecords.get(i).getTime());
+//
+//					mDBHelperHistory.executeDeleteHistory(record);
+//				}
+				mDBHelperHistory.executeDeleteAllHistory(CurrentUser.getStudentID());
 
 				mHistoryRecords.clear();
 				refreshData();
@@ -156,11 +157,11 @@ public class InfoFragment extends Fragment
 			@Override
 			public void run(VideoRecord videoRecord)
 			{
-				if(mCollectionCnt == 0)
-					mCollection.setNewData(collectionVideos);
-
 				collectionVideos.add(videoRecord.getVideo());
 				mCollectionCnt --;
+
+				if(mCollectionCnt == 0)
+					mCollection.setNewData(collectionVideos);
 			}
 		});
 		mDBHelperCollection.setOnGetCollectionByStudentIdListener(new MiniDouYinDatabaseHelper.OnGetCollectionByStudentIdListener()
@@ -170,7 +171,9 @@ public class InfoFragment extends Fragment
 			{
 				mCollectionCnt = collectionRecords.size();
 				collectionVideos.clear();
-				for(CollectionRecord record : collectionRecords)
+				if(collectionRecords.isEmpty())
+					mCollection.setNewData(new ArrayList<>());
+				else for(CollectionRecord record : collectionRecords)
 				{
 					mDBHelperCollection.executeGetVideoById(record.getVideoId());
 				}
@@ -189,11 +192,11 @@ public class InfoFragment extends Fragment
 			@Override
 			public void run(VideoRecord videoRecord)
 			{
-				if(mHistoryCnt == 0)
-					mHistory.setNewData(historyVideos);
-
 				historyVideos.add(videoRecord.getVideo());
 				mHistoryCnt --;
+
+				if(mHistoryCnt == 0)
+					mHistory.setNewData(historyVideos);
 			}
 		});
 		mDBHelperHistory.setOnGetHistoryByStudentIdListener(new MiniDouYinDatabaseHelper.OnGetHistoryByStudentIdListener()
@@ -204,7 +207,9 @@ public class InfoFragment extends Fragment
 				mHistoryCnt = historyRecords.size();
 				mHistoryRecords = historyRecords;
 				historyVideos.clear();
-				for(HistoryRecord record : historyRecords)
+				if(historyRecords.isEmpty())
+					mHistory.setNewData(new ArrayList<>());
+				else for(HistoryRecord record : historyRecords)
 				{
 					mDBHelperHistory.executeGetVideoById(record.getVideoId());
 				}
