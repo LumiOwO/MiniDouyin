@@ -13,11 +13,14 @@ import java.util.List;
 public interface CollectionDao {
 
 	@Query("select * from collection where stuid=:studentId")
-	public List<CollectionRecord> getCollectionRecordByStudentId(String studentId);
+	List<CollectionRecord> getCollectionRecordByStudentId(String studentId);
+
+	@Query("select * from collection where stuid=:studentId and video_id=:videoId")
+	CollectionRecord getCollectionRecord(String studentId, String videoId);
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
-	public Long insertCollectionRecord(CollectionRecord collectionRecord);
+	Long insertCollectionRecord(CollectionRecord collectionRecord);
 
 	@Delete
-	public int deleteCollectionRecord(CollectionRecord collectionRecord);
+	int deleteCollectionRecord(CollectionRecord collectionRecord);
 }

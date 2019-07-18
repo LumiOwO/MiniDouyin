@@ -14,21 +14,23 @@ import java.util.List;
 public interface VideoDao {
 
 	@Query("select * from videos where id=:videoId")
-	public VideoRecord getVideoById(String videoId);
+	VideoRecord getVideoById(String videoId);
 
-	@Query("select stuid, count(id) as video_count from videos group by stuid order by count(id) desc")
-	public List<StudentVideoCountTuple> getVideoCountByOne();
+	@Query("select * from videos where stuid=:studentId")
+	List<VideoRecord> getVideoByStudentId(String studentId);
+
+	@Query("select stuid, count(id) as video_count from videos group by stuid order by count(id) desc limit :limit")
+	List<StudentVideoCountTuple> getVideoCountByOne(int limit);
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
-	public Long insertVideoRecord(VideoRecord videoRecord);
-
-	@Insert(onConflict = OnConflictStrategy.REPLACE)
-	public List<Long> insertVideoRecord(VideoRecord... videoRecords);
+	List<Long> insertVideoRecord(VideoRecord... videoRecords);
 
 	@Delete
-	public int deleteVideo(VideoRecord videoRecord);
+	int deleteVideo(VideoRecord videoRecord);
 
 	@Update
-	public int updateVideo(VideoRecord videoRecord);
+	int updateVideo(VideoRecord videoRecord);
 
+	@Query("select * from videos order by hot_value desc limit :limit")
+	List<VideoRecord> getVideoByHotValueRank(int limit);
 }
