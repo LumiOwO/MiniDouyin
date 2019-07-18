@@ -2,10 +2,10 @@ package com.example.minidouyin.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +16,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.minidouyin.R;
 import com.example.minidouyin.activities.PlayActivity;
-import com.example.minidouyin.fragments.nearby.NearbyVideoAdapter;
+import com.example.minidouyin.adapter.NearbyVideoAdapter;
+import com.example.minidouyin.model.Video;
 
 public class NearbyFragment extends Fragment
 {
