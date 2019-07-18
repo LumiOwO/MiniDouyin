@@ -225,7 +225,7 @@ public class MiniDouYinDatabaseHelper {
 	public class InsertHistoryTask extends AsyncTask<HistoryRecord, Integer, Long> {
 		@Override
 		protected Long doInBackground(HistoryRecord... historyRecords) {
-			return getDatabase(mContext).historyDao().insertHistoryRecord(historyRecords[0]);
+			return getDatabase(mContext).historyDao().insertHistory(historyRecords[0]);
 		}
 
 		@Override
@@ -392,35 +392,37 @@ public class MiniDouYinDatabaseHelper {
 	/*
 	 *
 	 * */
-	private OnDeleteAllHistroyListener mOnDeleteAllHistroyListener;
+	private OnDeleteHistroiesListener mOnDeleteHistroiesListener;
 
-	public interface OnDeleteAllHistroyListener {
+	public interface OnDeleteHistroiesListener {
 		void run(int affectedCount);
 	}
 
-	public void setOnDeleteHistoryListener(OnDeleteAllHistroyListener listener) {
-		mOnDeleteAllHistroyListener = listener;
+	public void setOnDeleteHistoryListener(OnDeleteHistroiesListener listener) {
+		mOnDeleteHistroiesListener = listener;
 	}
 
-	public DeleteAllHistoryTask executeDeleteAllHistory() {
-		DeleteAllHistoryTask task = new DeleteAllHistoryTask();
+	public DeleteHistoriesTask executeDeleteHistories(List<HistoryRecord> historyRecords) {
+		DeleteHistoriesTask task = new DeleteHistoriesTask();
 		mAsyncTasks.add(task);
-		return (DeleteAllHistoryTask) task.execute();
+		return (DeleteHistoriesTask) task.execute();
 	}
 
-	public class DeleteAllHistoryTask extends AsyncTask<Void, Integer, Integer> {
+	public class DeleteHistoriesTask extends AsyncTask<List<HistoryRecord>, Integer, Integer> {
 
 		@Override
-		protected Integer doInBackground(Void... voids) {
-			return getDatabase(mContext).historyDao().deleteAllHistoryRecord();
+		protected Integer doInBackground(List<HistoryRecord>... historyRecordLists) {
+			HistoryRecord[] historyRecords = new HistoryRecord[] {};
+			historyRecordLists[0].toArray(historyRecords);
+			return getDatabase(mContext).historyDao().deleteHistories(historyRecords);
 		}
 
 		@Override
 		protected void onPostExecute(Integer integer) {
 			super.onPostExecute(integer);
 			mAsyncTasks.remove(this);
-			if (mOnDeleteAllHistroyListener != null) {
-				mOnDeleteAllHistroyListener.run(integer);
+			if (mOnDeleteHistroiesListener != null) {
+				mOnDeleteHistroiesListener.run(integer);
 			}
 		}
 	}
@@ -428,17 +430,17 @@ public class MiniDouYinDatabaseHelper {
 	/*
 	 *
 	 * */
-	public HotValueIncrementTask executeHotValueIncrement(String videoId) {
-		HotValueIncrementTask task = new HotValueIncrementTask();
+	public UpdateVideoTask executeUpdateVideo(VideoRecord videoRecord) {
+		UpdateVideoTask task = new UpdateVideoTask();
 		mAsyncTasks.add(task);
-		return (HotValueIncrementTask) task.execute();
+		return (UpdateVideoTask) task.execute(videoRecord);
 	}
 
-	public class HotValueIncrementTask extends AsyncTask<String, Integer, Integer> {
+	public class UpdateVideoTask extends AsyncTask<VideoRecord, Integer, Integer> {
 
 		@Override
-		protected Integer doInBackground(String... videoIds) {
-			return getDatabase(mContext).videoDao().hotValueIncrement(videoIds[0]);
+		protected Integer doInBackground(VideoRecord... videos) {
+			return getDatabase(mContext).videoDao().updateVideo(videos[0]);
 		}
 
 		@Override

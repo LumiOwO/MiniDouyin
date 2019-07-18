@@ -34,6 +34,4 @@ public interface VideoDao {
 	@Query("select * from videos order by hot_value desc limit :limit")
 	List<VideoRecord> getVideoByHotValueRank(int limit);
 
-	@Query("update videos set hot_value=hot_value+1 where id=:id")
-	int hotValueIncrement(String videoId);
 }

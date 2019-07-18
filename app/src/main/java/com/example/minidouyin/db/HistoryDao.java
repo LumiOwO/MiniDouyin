@@ -15,11 +15,11 @@ public interface HistoryDao {
 	public List<HistoryRecord> getHistoryRecordByStudentId(String studentId);
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
-	public Long insertHistoryRecord(HistoryRecord historyRecord);
+	public Long insertHistory(HistoryRecord historyRecord);
 
 	@Delete
-	public int deleteHistoryRecord(HistoryRecord historyRecord);
+	public int deleteHistory(HistoryRecord historyRecord);
 
-	@Query("delete from history")
-	public int deleteAllHistoryRecord();
+	@Delete
+	public int deleteHistories(HistoryRecord... historyRecords);
 }
