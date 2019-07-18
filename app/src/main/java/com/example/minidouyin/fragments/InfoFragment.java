@@ -19,34 +19,39 @@ import com.example.minidouyin.R;
 import com.example.minidouyin.activities.PlayActivity;
 import com.example.minidouyin.adapter.CollectionRecyclerAdapter;
 import com.example.minidouyin.adapter.NearbyVideoAdapter;
+import com.example.minidouyin.db.HistoryRecord;
+import com.example.minidouyin.db.MiniDouYinDatabase;
+import com.example.minidouyin.db.MiniDouYinDatabaseHelper;
+import com.example.minidouyin.db.VideoRecord;
+import com.example.minidouyin.model.CurrentUser;
 import com.example.minidouyin.model.Video;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class InfoFragment extends Fragment
 {
 	private CollectionRecyclerAdapter mCollection;
-	private RecyclerView mHistory;
+	private CollectionRecyclerAdapter mHistory;
+
+	private MiniDouYinDatabaseHelper mDBHelper = new MiniDouYinDatabaseHelper(getContext());
+	private MiniDouYinDatabaseHelper.GetHistoryRecordByStudentIdTask mHistoryBySidTask;
+	private MiniDouYinDatabaseHelper.GetVideoRecordByIdTask mVideoByIDTask;
 
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
 	{
 		View view = inflater.inflate(R.layout.fragment_info, container, false);
-		RecyclerView collectionView = view.findViewById(R.id.info_collection_recyclerView);
-		mHistory = view.findViewById(R.id.info_history_recyclerView);
 
-		// show in two columns
+		// collection
+		RecyclerView collectionView = view.findViewById(R.id.info_collection_recyclerView);
 		collectionView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 		mCollection = new CollectionRecyclerAdapter(R.layout.layout_collection);
 		collectionView.setAdapter(mCollection);
-		mCollection.setNewData(new ArrayList<Video>() {
-			{
-//				for(int i=0; i<10; i++)
-//				add(new Video("2", "1", "https://sf1-hscdn-tos.pstatp.com/obj/developer-baas/baas/tt7217xbo2wz3cem41/fe588f07ebf686f9_1563458992883.jpg",
-//						"https://sf3-hscdn-tos.pstatp.com/obj/developer-baas/baas/tt7217xbo2wz3cem41/64a4af811b75a2fe_1563458992992.mp4"));
-			}
-		});
+
+
+//		mCollection.setNewData(list);
 
 		mCollection.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			@Override
@@ -57,6 +62,46 @@ public class InfoFragment extends Fragment
 		mCollection.openLoadAnimation(BaseQuickAdapter.SCALEIN);
 		mCollection.isFirstOnly(false);
 		mCollection.setEmptyView(R.layout.layout_nocollection, container);
+
+		// history
+		RecyclerView historyView = view.findViewById(R.id.info_history_recyclerView);
+		historyView.setLayoutManager(new LinearLayoutManager(getContext()));
+		mHistory = new CollectionRecyclerAdapter(R.layout.layout_history);
+		historyView.setAdapter(mHistory);
+
+		final List<Video> historyVideos = new ArrayList<>();
+		mDBHelper.setOnGetVideoRecordByIdListener(new MiniDouYinDatabaseHelper.OnGetVideoRecordByIdListener()
+		{
+			@Override
+			public void run(VideoRecord videoRecord)
+			{
+				historyVideos.add(videoRecord.getVideo());
+			}
+		});
+		mDBHelper.setOnGetHistoryRecordByStudentIdListener(new MiniDouYinDatabaseHelper.OnGetHistoryRecordByStudentIdListener()
+		{
+			@Override
+			public void run(List<HistoryRecord> historyRecords)
+			{
+				for(HistoryRecord record : historyRecords)
+				{
+					mVideoByIDTask = mDBHelper.executeGetVideoRecordById(record.getVideoId());
+				}
+			}
+		});
+		mHistoryBySidTask = mDBHelper.executeGetHistoryRecordByStudentId(CurrentUser.getStudentID());
+
+//		mHistory.setNewData();
+
+		mHistory.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+			@Override
+			public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+				PlayActivity.launch((Activity) getContext(), mCollection.getData(), position);
+			}
+		});
+		mHistory.openLoadAnimation(BaseQuickAdapter.SLIDEIN_RIGHT);
+		mHistory.isFirstOnly(false);
+		mHistory.setEmptyView(R.layout.layout_nohistory, container);
 
 		return view;
 	}

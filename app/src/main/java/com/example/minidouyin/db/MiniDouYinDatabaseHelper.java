@@ -143,9 +143,9 @@ public class MiniDouYinDatabaseHelper {
 		void run(List<HistoryRecord> hotValues);
 	}
 
-	public GetHistoryRecordByStudentIdTask executeGetHistoryRecordByStudentId() {
+	public GetHistoryRecordByStudentIdTask executeGetHistoryRecordByStudentId(String studentID) {
 		GetHistoryRecordByStudentIdTask task = new GetHistoryRecordByStudentIdTask();
-		return (GetHistoryRecordByStudentIdTask) task.execute();
+		return (GetHistoryRecordByStudentIdTask) task.execute(studentID);
 	}
 
 	public class GetHistoryRecordByStudentIdTask extends AsyncTask<String, Integer, List<HistoryRecord>> {
