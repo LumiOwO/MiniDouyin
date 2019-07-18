@@ -392,14 +392,14 @@ public class MiniDouYinDatabaseHelper {
 	/*
 	 *
 	 * */
-	private OnDeleteHistroyListener mOnDeleteHistroyListener;
+	private OnDeleteAllHistroyListener mOnDeleteAllHistroyListener;
 
 	public interface OnDeleteHistroyListener {
 		void run(int affectedCount);
 	}
 
-	public void setOnDeleteHistoryListener(OnDeleteHistroyListener listener) {
-		mOnDeleteHistroyListener = listener;
+	public void setOnDeleteHistoryListener(OnDeleteAllHistroyListener listener) {
+		mOnDeleteAllHistroyListener = listener;
 	}
 
 	public DeleteHistoryTask executeDeleteHistory(HistoryRecord historyRecord) {
@@ -419,11 +419,48 @@ public class MiniDouYinDatabaseHelper {
 		protected void onPostExecute(Integer integer) {
 			super.onPostExecute(integer);
 			mAsyncTasks.remove(this);
-			if (mOnDeleteHistroyListener != null) {
-				mOnDeleteHistroyListener.run(integer);
+			if (mOnDeleteAllHistroyListener != null) {
+				mOnDeleteAllHistroyListener.run(integer);
 			}
 		}
 	}
+
+	/*
+	 *
+	 * */
+	private OnDeleteAllHistroyListener mOnDeleteHistroyListener;
+
+	public interface OnDeleteAllHistroyListener {
+		void run(int affectedCount);
+	}
+
+	public void setOnDeleteAllHistoryListener(OnDeleteAllHistroyListener listener) {
+		mOnDeleteAllHistroyListener = listener;
+	}
+
+	public DeleteAllHistoryTask executeDeleteAllHistory(String studentId) {
+		DeleteAllHistoryTask task = new DeleteAllHistoryTask();
+		mAsyncTasks.add(task);
+		return (DeleteAllHistoryTask) task.execute(studentId);
+	}
+
+	public class DeleteAllHistoryTask extends AsyncTask<String, Integer, Integer> {
+
+		@Override
+		protected Integer doInBackground(String... studentIds) {
+			return getDatabase(mContext).historyDao().deleteAllHistory(studentIds[0]);
+		}
+
+		@Override
+		protected void onPostExecute(Integer integer) {
+			super.onPostExecute(integer);
+			mAsyncTasks.remove(this);
+			if (mOnDeleteAllHistroyListener != null) {
+				mOnDeleteAllHistroyListener.run(integer);
+			}
+		}
+	}
+
 
 	/*
 	 *

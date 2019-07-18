@@ -22,4 +22,7 @@ public interface HistoryDao {
 
 	@Delete
 	public int deleteHistories(HistoryRecord... historyRecords);
+
+	@Query("delete from history where stuid=:studentId")
+	public int deleteAllHistory(String studentId);
 }
