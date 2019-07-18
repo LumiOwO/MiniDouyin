@@ -88,9 +88,9 @@ public class ScrollCalculatorHelper {
                 GSYBaseVideoPlayer tmpPlayer = runnable.gsyBaseVideoPlayer;
                 playHandler.removeCallbacks(runnable);
                 runnable = null;
-                if (tmpPlayer == gsyBaseVideoPlayer) {
-                    return;
-                }
+//                if (tmpPlayer == gsyBaseVideoPlayer) {
+//                    return;
+//                }
             }
             runnable = new PlayRunnable(gsyBaseVideoPlayer);
             Log.e(TAG, "playVideo: play ");

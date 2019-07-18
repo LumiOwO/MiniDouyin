@@ -70,7 +70,6 @@ public class VideoRecyclerItemHolder extends RecyclerView.ViewHolder {
                 .load(video.getVideoUrl())
                 .into(imageView);
         gsyVideoPlayer.setThumbImageView(imageView);
-
     }
 
     public RecyclerView.Adapter getRecyclerBaseAdapter() {
