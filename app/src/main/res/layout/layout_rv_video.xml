@@ -43,6 +43,15 @@
 			app:allow_random_color="true"
 			app:siShape="@raw/heart"/>
 
+		<TextView
+			android:id="@+id/rv_video_hot_value"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:textColor="@color/white"
+			android:text="99.9"
+			android:gravity="center"
+			android:textSize="15sp"/>
+
 		<com.sackcentury.shinebuttonlib.ShineButton
 			android:id="@+id/rv_video_btn_share"
 			android:layout_width="40dp"

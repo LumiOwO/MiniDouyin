@@ -197,8 +197,20 @@ public class VideoPlayer extends StandardGSYVideoPlayer {
         }
     }
 
+    public interface OnDoubleClickListener{
+        public void run();
+    };
+    private OnDoubleClickListener mOnDoubleClickListener;
+
+    public void setOnDoubleClickListener(OnDoubleClickListener listener)
+    {
+        mOnDoubleClickListener = listener;
+    }
+
     @Override
     protected void touchDoubleUp() {
         // TODO: 双击
+        if(mOnDoubleClickListener != null)
+            mOnDoubleClickListener.run();
     }
 }

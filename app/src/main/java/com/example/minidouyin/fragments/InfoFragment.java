@@ -170,6 +170,13 @@ public class InfoFragment extends Fragment
 	}
 
 	@Override
+	public void onResume()
+	{
+		super.onResume();
+		refreshData();
+	}
+
+	@Override
 	public void onDestroy()
 	{
 		super.onDestroy();
@@ -182,8 +189,7 @@ public class InfoFragment extends Fragment
 	{
 		super.setUserVisibleHint(isVisibleToUser);
 		if (isVisibleToUser && isVisible()) {
-			mDBHelperHistory.executeGetHistoryByStudentId(CurrentUser.getStudentID());
-			mDBHelperCollection.executeGetCollectionByStudentId(CurrentUser.getStudentID());
+			refreshData();
 		}
 	}
 
@@ -193,5 +199,11 @@ public class InfoFragment extends Fragment
 		mUsername_editable.setText(CurrentUser.getUsername());
 		mStudentID_title.setText(CurrentUser.getStudentID());
 		mStudentID_editable.setText(CurrentUser.getStudentID());
+	}
+
+	private void refreshData()
+	{
+		mDBHelperHistory.executeGetHistoryByStudentId(CurrentUser.getStudentID());
+		mDBHelperCollection.executeGetCollectionByStudentId(CurrentUser.getStudentID());
 	}
 }

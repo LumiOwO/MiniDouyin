@@ -178,6 +178,7 @@ public class VideoFragment extends Fragment {
 			{
 				if(((ShineButton)v).isChecked())
 					((ShineButton)v).setChecked(false);
+
 			}
 		};
 

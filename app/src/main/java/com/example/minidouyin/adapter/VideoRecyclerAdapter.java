@@ -68,4 +68,9 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter {
         mItemDataList = data;
         notifyDataSetChanged();
     }
+
+    public List<Video> getData()
+    {
+        return mItemDataList;
+    }
 }

@@ -155,8 +155,9 @@ public class Video implements Serializable
 				'}';
 	}
 
+	private static Random random = new Random(System.currentTimeMillis());
+
 	public VideoRecord createRecord() {
-		Random random = new Random(System.currentTimeMillis());
-		return new VideoRecord(this, random.nextInt(100));
+		return new VideoRecord(this, random.nextInt(1000));
 	}
 }

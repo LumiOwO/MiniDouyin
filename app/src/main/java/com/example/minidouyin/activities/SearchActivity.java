@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +26,7 @@ import com.example.minidouyin.db.MiniDouYinDatabaseHelper;
 import com.example.minidouyin.db.StudentVideoCountTuple;
 import com.example.minidouyin.db.VideoRecord;
 import com.example.minidouyin.fragments.SearchFragment;
+import com.example.minidouyin.model.Video;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,7 +35,7 @@ public class SearchActivity extends AppCompatActivity {
 
 	private static final String TAG = "SearchActivity";
 
-	private ImageButton mBackButton, mScanButton;
+	private ImageButton mBackButton;
 	private EditText mSearchText;
 
 	private MostRankAdapter mMostRankAdapter;
@@ -76,7 +78,20 @@ public class SearchActivity extends AppCompatActivity {
 		mMostRankAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			@Override
 			public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-//				PlayActivity.launch(SearchActivity.this, mMostRankAdapter.getData(), position);
+				TextView textView = view.findViewById(R.id.most_rank_studentID);
+				String studentID = textView.getText().toString();
+
+				mDBHelper.setOnGetVideoByStudentIdListener(new MiniDouYinDatabaseHelper.OnGetVideoByStudentIdListener()
+				{
+					@Override
+					public void run(List<VideoRecord> videoRecords)
+					{
+						List<Video> videos = videoRecords.stream().map(VideoRecord::getVideo).collect(Collectors.toList());
+						PlayActivity.launch(SearchActivity.this, videos, 0);
+					}
+				});
+				mDBHelper.executeGetVideoByStudentId(studentID);
+
 			}
 		});
 		mMostRankAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
@@ -112,10 +127,11 @@ public class SearchActivity extends AppCompatActivity {
 			@Override
 			public void run(List<VideoRecord> videoRecords)
 			{
+				mHotRankAdapter.updateHotValue(videoRecords);
 				mHotRankAdapter.setNewData(videoRecords.stream().map(VideoRecord::getVideo).collect(Collectors.toList()));
 			}
 		});
-		mDBHelper.executeGetVideoCountByOne();
+		mDBHelper.executeGetVideoByHotValueRank();
 
 		mBackButton.setOnClickListener(mBackToMainListener);
 
