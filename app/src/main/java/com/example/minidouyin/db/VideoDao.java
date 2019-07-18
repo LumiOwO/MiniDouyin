@@ -13,6 +13,9 @@ import java.util.List;
 @Dao
 public interface VideoDao {
 
+	@Query("select * from videos where id=:videoId")
+	public VideoRecord getVideoById(String videoId);
+
 	@Query("select stuid, count(id) as video_count from videos group by stuid order by count(id) desc")
 	public List<StudentVideoCountTuple> getVideoCountByOne();
 
@@ -20,7 +23,7 @@ public interface VideoDao {
 	public Long insertVideoRecord(VideoRecord videoRecord);
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
-	public List<Long> insertVideoRecords(VideoRecord... videoRecords);
+	public List<Long> insertVideoRecord(VideoRecord... videoRecords);
 
 	@Delete
 	public int deleteVideo(VideoRecord videoRecord);

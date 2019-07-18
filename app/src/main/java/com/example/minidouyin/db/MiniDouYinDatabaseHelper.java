@@ -28,6 +28,44 @@ public class MiniDouYinDatabaseHelper {
 		return mDatabase;
 	}
 
+
+	/*
+	 *
+	 * */
+
+	OnGetVideoRecordByIdListener mOnGetVideoRecordByIdListener;
+
+	public void setOnGetVideoRecordByIdListener(@NonNull OnGetVideoRecordByIdListener listener) {
+		mOnGetVideoRecordByIdListener = listener;
+	}
+
+	public interface OnGetVideoRecordByIdListener {
+		void run(VideoRecord videoRecord);
+	}
+
+	public GetVideoRecordByIdTask executeGetVideoRecordById(String videoId) {
+		GetVideoRecordByIdTask task = new GetVideoRecordByIdTask();
+		return (GetVideoRecordByIdTask) task.execute(videoId);
+	}
+
+	public class GetVideoRecordByIdTask extends AsyncTask<String, Integer, VideoRecord> {
+		@Override
+		protected VideoRecord doInBackground(String... videoIds) {
+			return getDatabase(mContext).videoDao().getVideoById(videoIds[0]);
+		}
+
+		@Override
+		protected void onPostExecute(VideoRecord lists) {
+			super.onPostExecute(lists);
+			if (mOnGetVideoRecordByIdListener != null) {
+				mOnGetVideoRecordByIdListener.run(lists);
+			}
+		}
+	}
+
+	/*
+	 *
+	 * */
 	public InsertVideoRecordsTask executeInsertVideoRecords(List<Video> videoList) {
 		InsertVideoRecordsTask task = new InsertVideoRecordsTask();
 		return (InsertVideoRecordsTask) task.execute(videoList);
@@ -39,10 +77,13 @@ public class MiniDouYinDatabaseHelper {
 			List<VideoRecord> list = lists[0].stream().map(Video::createRecord).collect(Collectors.toList());
 			VideoRecord[] array = new VideoRecord[list.size()];
 			list.toArray(array);
-			return getDatabase(mContext).videoDao().insertVideoRecords(array);
+			return getDatabase(mContext).videoDao().insertVideoRecord(array);
 		}
 	}
 
+	/*
+	 *
+	 * */
 	OnGetVideoCountByOneListener mOnGetVideoCountByOneListener;
 
 	public void setOnGetVideoCountByOneListener(@NonNull OnGetVideoCountByOneListener listener) {
@@ -73,6 +114,9 @@ public class MiniDouYinDatabaseHelper {
 		}
 	}
 
+	/*
+	 *
+	 * */
 	public InsertHistoryRecordTask executeInsertHistoryRecord(HistoryRecord historyRecord) {
 		InsertHistoryRecordTask task = new InsertHistoryRecordTask();
 		return (InsertHistoryRecordTask) task.execute(historyRecord);
@@ -86,6 +130,9 @@ public class MiniDouYinDatabaseHelper {
 		}
 	}
 
+	/*
+	 *
+	 * */
 	OnGetHistoryRecordByStudentIdListener mOnGetHistoryRecordByStudentIdListener;
 
 	public void setOnGetHistoryRecordByStudentIdListener(@NonNull OnGetHistoryRecordByStudentIdListener listener) {
