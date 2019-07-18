@@ -27,7 +27,7 @@
 
         <ImageView
             android:id="@+id/thumbImage"
-            android:scaleType="centerInside"
+            android:scaleType="center"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -43,12 +43,12 @@
         android:progressDrawable="@drawable/video_progress" />
 
 
-    <moe.codeest.enviews.ENDownloadView
-        android:id="@+id/loading"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:visibility="invisible" />
+    <!--<moe.codeest.enviews.ENDownloadView-->
+        <!--android:id="@+id/loading"-->
+        <!--android:layout_width="28dp"-->
+        <!--android:layout_height="28dp"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:visibility="invisible" />-->
 
 </RelativeLayout>

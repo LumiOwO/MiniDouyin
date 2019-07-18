@@ -48,6 +48,7 @@ public class VideoPlayer extends StandardGSYVideoPlayer {
         if (mThumbImageViewLayout != null &&
                 (mCurrentState == -1 || mCurrentState == CURRENT_STATE_NORMAL || mCurrentState == CURRENT_STATE_ERROR)) {
             mThumbImageViewLayout.setVisibility(VISIBLE);
+            mCoverImage.setScaleType(ImageView.ScaleType.CENTER);
         }
     }
 
@@ -63,7 +64,6 @@ public class VideoPlayer extends StandardGSYVideoPlayer {
                 .setDefaultRequestOptions(
                         new RequestOptions()
                                 .frame(1000000)
-                                .centerCrop()
                                 .error(res)
                                 .placeholder(res))
                 .load(url)
@@ -200,5 +200,11 @@ public class VideoPlayer extends StandardGSYVideoPlayer {
     @Override
     protected void touchDoubleUp() {
         // TODO: 双击
+    }
+
+    @Override
+    public void onError(int what, int extra) {
+        super.onError(what, extra);
+        startPlayLogic();
     }
 }
