@@ -66,6 +66,40 @@ public class MiniDouYinDatabaseHelper {
 	/*
 	 *
 	 * */
+
+	OnGetVideoRecordByStudentIdListener mOnGetVideoRecordByStudentIdListener;
+
+	public void setOnGetVideoRecordByStudentIdListener(@NonNull OnGetVideoRecordByStudentIdListener listener) {
+		mOnGetVideoRecordByStudentIdListener = listener;
+	}
+
+	public interface OnGetVideoRecordByStudentIdListener {
+		void run(List<VideoRecord> videoRecords);
+	}
+
+	public GetVideoRecordByStudentIdTask executeGetVideoRecordByStudentId(String studentId) {
+		GetVideoRecordByStudentIdTask task = new GetVideoRecordByStudentIdTask();
+		return (GetVideoRecordByStudentIdTask) task.execute(studentId);
+	}
+
+	public class GetVideoRecordByStudentIdTask extends AsyncTask<String, Integer, List<VideoRecord>> {
+		@Override
+		protected List<VideoRecord> doInBackground(String... studentIds) {
+			return getDatabase(mContext).videoDao().getVideoByStudentId(studentIds[0]);
+		}
+
+		@Override
+		protected void onPostExecute(List<VideoRecord> lists) {
+			super.onPostExecute(lists);
+			if (mOnGetVideoRecordByStudentIdListener != null) {
+				mOnGetVideoRecordByStudentIdListener.run(lists);
+			}
+		}
+	}
+
+	/*
+	 *
+	 * */
 	public InsertVideoRecordsTask executeInsertVideoRecords(List<Video> videoList) {
 		InsertVideoRecordsTask task = new InsertVideoRecordsTask();
 		return (InsertVideoRecordsTask) task.execute(videoList);
@@ -96,13 +130,18 @@ public class MiniDouYinDatabaseHelper {
 
 	public GetVideoCountByOneTask executeGetVideoCountByOne() {
 		GetVideoCountByOneTask task = new GetVideoCountByOneTask();
-		return (GetVideoCountByOneTask) task.execute();
+		return (GetVideoCountByOneTask) task.execute(5);
 	}
 
-	public class GetVideoCountByOneTask extends AsyncTask<Void, Integer, List<StudentVideoCountTuple>> {
+	public GetVideoCountByOneTask executeGetVideoCountByOne(int limit) {
+		GetVideoCountByOneTask task = new GetVideoCountByOneTask();
+		return (GetVideoCountByOneTask) task.execute(limit);
+	}
+
+	public class GetVideoCountByOneTask extends AsyncTask<Integer, Integer, List<StudentVideoCountTuple>> {
 		@Override
-		protected List<StudentVideoCountTuple> doInBackground(Void... voids) {
-			return getDatabase(mContext).videoDao().getVideoCountByOne();
+		protected List<StudentVideoCountTuple> doInBackground(Integer... limits) {
+			return getDatabase(mContext).videoDao().getVideoCountByOne(limits[0]);
 		}
 
 		@Override
@@ -110,6 +149,44 @@ public class MiniDouYinDatabaseHelper {
 			super.onPostExecute(lists);
 			if (mOnGetVideoCountByOneListener != null) {
 				mOnGetVideoCountByOneListener.run(lists);
+			}
+		}
+	}
+
+	/*
+	 *
+	 * */
+	OnGetVideoRecordByHotValueRankListener mOnGetVideoRecordByHotValueRankListener;
+
+	public void setOnGetVideoRecordByHotValueRankListener(@NonNull OnGetVideoRecordByHotValueRankListener listener) {
+		mOnGetVideoRecordByHotValueRankListener = listener;
+	}
+
+	public interface OnGetVideoRecordByHotValueRankListener {
+		void run(List<VideoRecord> videoRecords);
+	}
+
+	public GetVideoRecordByHotValueRankTask executeGetVideoRecordByHotValueRank() {
+		GetVideoRecordByHotValueRankTask task = new GetVideoRecordByHotValueRankTask();
+		return (GetVideoRecordByHotValueRankTask) task.execute(10);
+	}
+
+	public GetVideoRecordByHotValueRankTask executeGetVideoRecordByHotValueRank(int limit) {
+		GetVideoRecordByHotValueRankTask task = new GetVideoRecordByHotValueRankTask();
+		return (GetVideoRecordByHotValueRankTask) task.execute(limit);
+	}
+
+	public class GetVideoRecordByHotValueRankTask extends AsyncTask<Integer, Integer, List<VideoRecord>> {
+		@Override
+		protected List<VideoRecord> doInBackground(Integer... limits) {
+			return getDatabase(mContext).videoDao().getVideoByHotValueRank(limits[0]);
+		}
+
+		@Override
+		protected void onPostExecute(List<VideoRecord> lists) {
+			super.onPostExecute(lists);
+			if (mOnGetVideoRecordByHotValueRankListener != null) {
+				mOnGetVideoRecordByHotValueRankListener.run(lists);
 			}
 		}
 	}
@@ -166,6 +243,22 @@ public class MiniDouYinDatabaseHelper {
 	/*
 	 *
 	 * */
+	public DeleteCollectionRecordTask executeDeleteCollectionRecord(CollectionRecord collectionRecord) {
+		DeleteCollectionRecordTask task = new DeleteCollectionRecordTask();
+		return (DeleteCollectionRecordTask) task.execute(collectionRecord);
+	}
+
+
+	public class DeleteCollectionRecordTask extends AsyncTask<CollectionRecord, Integer, Integer> {
+		@Override
+		protected Integer doInBackground(CollectionRecord... collectionRecords) {
+			return getDatabase(mContext).collectionDao().deleteCollectionRecord(collectionRecords[0]);
+		}
+	}
+
+	/*
+	 *
+	 * */
 	public InsertCollectionRecordTask executeInsertCollectionRecord(CollectionRecord collectionRecord) {
 		InsertCollectionRecordTask task = new InsertCollectionRecordTask();
 		return (InsertCollectionRecordTask) task.execute(collectionRecord);
@@ -189,12 +282,12 @@ public class MiniDouYinDatabaseHelper {
 	}
 
 	public interface OnGetCollectionRecordByStudentIdListener {
-		void run(List<CollectionRecord> historyRecords);
+		void run(List<CollectionRecord> collectionRecords);
 	}
 
-	public GetCollectionRecordByStudentIdTask executeGetCollectionRecordByStudentId(String studentID) {
+	public GetCollectionRecordByStudentIdTask executeGetCollectionRecordByStudentId(String studentId) {
 		GetCollectionRecordByStudentIdTask task = new GetCollectionRecordByStudentIdTask();
-		return (GetCollectionRecordByStudentIdTask) task.execute(studentID);
+		return (GetCollectionRecordByStudentIdTask) task.execute(studentId);
 	}
 
 	public class GetCollectionRecordByStudentIdTask extends AsyncTask<String, Integer, List<CollectionRecord>> {
@@ -208,6 +301,39 @@ public class MiniDouYinDatabaseHelper {
 			super.onPostExecute(collectionRecords);
 			if (mOnGetCollectionRecordByStudentIdListener != null) {
 				mOnGetCollectionRecordByStudentIdListener.run(collectionRecords);
+			}
+		}
+	}
+
+	/*
+	 *
+	 * */
+	OnGetCollectionRecordListener mOnGetCollectionRecordListener;
+
+	public void setOnGetCollectionRecordListener(@NonNull OnGetCollectionRecordListener listener) {
+		mOnGetCollectionRecordListener = listener;
+	}
+
+	public interface OnGetCollectionRecordListener {
+		void run(CollectionRecord collectionRecord);
+	}
+
+	public GetCollectionRecordTask executeGetCollectionRecord(String studentId, String videoId) {
+		GetCollectionRecordTask task = new GetCollectionRecordTask();
+		return (GetCollectionRecordTask) task.execute(studentId, videoId);
+	}
+
+	public class GetCollectionRecordTask extends AsyncTask<String, Integer, CollectionRecord> {
+		@Override
+		protected CollectionRecord doInBackground(String... studentIds) {
+			return getDatabase(mContext).collectionDao().getCollectionRecord(studentIds[0], studentIds[1]);
+		}
+
+		@Override
+		protected void onPostExecute(CollectionRecord collectionRecord) {
+			super.onPostExecute(collectionRecord);
+			if (mOnGetCollectionRecordListener != null) {
+				mOnGetCollectionRecordListener.run(collectionRecord);
 			}
 		}
 	}

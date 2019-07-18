@@ -20,20 +20,38 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter {
     private List<Video> mItemDataList = new ArrayList<>();
     private Context mContext = null;
 
-    public VideoRecyclerAdapter(Context context) {
+    private View.OnClickListener mCollectionOnClickListener, mShareOnClickListener;
+
+    public VideoRecyclerAdapter(Context context, View.OnClickListener... listeners) {
         this.mContext = context;
+        setOnClickListeners(listeners);
     }
 
-    public VideoRecyclerAdapter(Context context, List<Video> itemDataList) {
+    public VideoRecyclerAdapter(Context context, List<Video> itemDataList, View.OnClickListener... listeners) {
         this.mItemDataList = itemDataList;
         this.mContext = context;
+        setOnClickListeners(listeners);
+    }
+
+    public void setOnClickListeners(View.OnClickListener... listeners) {
+        if (listeners != null && listeners.length > 0) {
+            mCollectionOnClickListener = listeners[0];
+            if (listeners.length > 1) {
+                mShareOnClickListener = listeners[1];
+            } else {
+                mShareOnClickListener = null;
+            }
+        } else {
+            mCollectionOnClickListener = null;
+            mShareOnClickListener = null;
+        }
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                       int viewType) {
         View v = LayoutInflater.from(mContext).inflate(R.layout.layout_rv_video, parent, false);
-        final RecyclerView.ViewHolder holder = new VideoRecyclerItemHolder(mContext, v);
+        final RecyclerView.ViewHolder holder = new VideoRecyclerItemHolder(mContext, v, mCollectionOnClickListener, mShareOnClickListener);
         return holder;
 
     }

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minidouyin.R;
 import com.example.minidouyin.adapter.VideoRecyclerAdapter;
+import com.example.minidouyin.db.CollectionRecord;
 import com.example.minidouyin.db.HistoryRecord;
 import com.example.minidouyin.db.MiniDouYinDatabaseHelper;
 import com.example.minidouyin.model.CurrentUser;
@@ -24,6 +25,7 @@ import com.example.minidouyin.model.Video;
 import com.example.minidouyin.net.NetManager;
 import com.example.minidouyin.net.response.GetVideosResponse;
 import com.example.minidouyin.utils.ScrollCalculatorHelper;
+import com.sackcentury.shinebuttonlib.ShineButton;
 import com.scwang.smartrefresh.header.MaterialHeader;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -59,10 +61,14 @@ public class VideoFragment extends Fragment {
 
 	private Handler mHandler = new Handler();
 
+	private View.OnClickListener mCollectionOnClickListener, mShareOnClickListener;
+
 	// database
 	private MiniDouYinDatabaseHelper mMiniDouYinDatabaseHelper = new MiniDouYinDatabaseHelper(getContext());
 	private MiniDouYinDatabaseHelper.InsertVideoRecordsTask mInsertVideoRecordsTask;
 	private MiniDouYinDatabaseHelper.InsertHistoryRecordTask mInsertHistoryRecordTask;
+	private MiniDouYinDatabaseHelper.InsertCollectionRecordTask mInsertCollectionRecordTask;
+	private MiniDouYinDatabaseHelper.DeleteCollectionRecordTask mDeleteCollectionRecordTask;
 
 	@Nullable
 	@Override
@@ -83,7 +89,6 @@ public class VideoFragment extends Fragment {
 			Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
 			mRefreshLayout.finishRefresh();
 			playFirstVideo();
-//			Log.d(TAG, "initVideoList: " + mVideoList.size());
 		});
 
 		mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
@@ -95,6 +100,7 @@ public class VideoFragment extends Fragment {
 		mRefreshLayout.setRefreshHeader(new MaterialHeader(getContext()));
 
 		initVideoList();
+		setOnClickListeners();
 		initRecyclerView();
 
 		Log.d("start", mStartPosition + "");
@@ -107,7 +113,7 @@ public class VideoFragment extends Fragment {
 	{
 		final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 		mRecyclerView.setLayoutManager(linearLayoutManager);
-		mRecyclerAdapter = new VideoRecyclerAdapter(getContext(), mVideoList);
+		mRecyclerAdapter = new VideoRecyclerAdapter(getContext(), mVideoList, mCollectionOnClickListener, mShareOnClickListener);
 		mRecyclerView.setAdapter(mRecyclerAdapter);
 		PagerSnapHelper snapHelper = new PagerSnapHelper();
 		snapHelper.attachToRecyclerView(mRecyclerView);
@@ -142,6 +148,29 @@ public class VideoFragment extends Fragment {
 		});
 
 		playFirstVideo();
+	}
+
+	public void setOnClickListeners() {
+		mCollectionOnClickListener = new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ShineButton btn = (ShineButton) v;
+				int firstVisibleItem = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+				CollectionRecord collectionRecord = new CollectionRecord(CurrentUser.getStudentID(), mVideoList.get(firstVisibleItem).getId());
+				if (btn.isChecked()) {
+					mInsertCollectionRecordTask = mMiniDouYinDatabaseHelper.executeInsertCollectionRecord(collectionRecord);
+				} else {
+					mDeleteCollectionRecordTask = mMiniDouYinDatabaseHelper.executeDeleteCollectionRecord(collectionRecord);
+				}
+			}
+		};
+
+		mShareOnClickListener = new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+
+			}
+		};
 	}
 
 	private void playFirstVideo() {
@@ -206,6 +235,9 @@ public class VideoFragment extends Fragment {
 		}
 		if (mInsertHistoryRecordTask != null && !mInsertHistoryRecordTask.isCancelled()) {
 			mInsertHistoryRecordTask.cancel(true);
+		}
+		if (mInsertCollectionRecordTask != null && !mInsertCollectionRecordTask.isCancelled()) {
+			mInsertCollectionRecordTask.cancel(true);
 		}
 	}
 
