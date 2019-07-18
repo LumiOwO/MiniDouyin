@@ -24,9 +24,6 @@ public class SearchFragment extends Fragment {
 
 	private static final String TAG = "SearchFragment";
 
-	@BindView(R.id.tv_text)
-	TextView mText;
-
 	// database
 	private MiniDouYinDatabaseHelper mDatabaseHelper = new MiniDouYinDatabaseHelper(getContext());
 
@@ -36,22 +33,6 @@ public class SearchFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_search, container, false);
 
 		ButterKnife.bind(this, view);
-
-		mDatabaseHelper.setOnGetVideoCountByOneListener(new MiniDouYinDatabaseHelper.OnGetVideoCountByOneListener() {
-			@Override
-			public void run(List<StudentVideoCountTuple> lists) {
-				int total = 0;
-				StringBuilder str = new StringBuilder();
-				for (StudentVideoCountTuple student : lists) {
-					total += student.getVideoCount();
-					str.append(student.getStudentId()).append(" ").append(student.getVideoCount() + "").append("\n");
-				}
-				mText.setText(str.toString());
-				Log.e(TAG, "run: " + total);
-			}
-		});
-
-		mDatabaseHelper.executeGetVideoCountByOne();
 
 		return view;
 	}

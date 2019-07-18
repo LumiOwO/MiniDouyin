@@ -45,7 +45,7 @@ public class PlayActivity extends AppCompatActivity
 			@Override
 			public Fragment getItem(int position)
 			{
-				return VideoFragment.launch(playList, startPosition);
+				return VideoFragment.launch(playList, startPosition, false);
 			}
 
 			@Override
