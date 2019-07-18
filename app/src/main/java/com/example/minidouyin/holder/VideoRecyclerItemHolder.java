@@ -2,7 +2,6 @@ package com.example.minidouyin.holder;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -90,7 +89,7 @@ public class VideoRecyclerItemHolder extends RecyclerView.ViewHolder {
         final String videoId = video.getId();
 
         MiniDouYinDatabaseHelper databaseHelper = new MiniDouYinDatabaseHelper(context);
-        databaseHelper.setOnGetVideoRecordByIdListener(new MiniDouYinDatabaseHelper.OnGetVideoRecordByIdListener() {
+        databaseHelper.setOnGetVideoByIdListener(new MiniDouYinDatabaseHelper.OnGetVideoByIdListener() {
             @Override
             public void run(VideoRecord videoRecord) {
                 int hotValue = videoRecord.getHotValue();
@@ -98,7 +97,7 @@ public class VideoRecyclerItemHolder extends RecyclerView.ViewHolder {
 //                Toast.makeText(context, hotValue + "", Toast.LENGTH_SHORT).show();
             }
         });
-        databaseHelper.setOnGetCollectionRecordListener(new MiniDouYinDatabaseHelper.OnGetCollectionRecordListener() {
+        databaseHelper.setOnGetCollectionListener(new MiniDouYinDatabaseHelper.OnGetCollectionListener() {
             @Override
             public void run(CollectionRecord collectionRecord) {
                 if (collectionRecord != null && collectionRecord.getStudentId().equals(CurrentUser.getStudentID()) && collectionRecord.getVideoId().equals(videoId)) {
@@ -108,8 +107,8 @@ public class VideoRecyclerItemHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
-        databaseHelper.executeGetVideoRecordById(videoId);
-        databaseHelper.executeGetCollectionRecord(CurrentUser.getStudentID(), videoId);
+        databaseHelper.executeGetVideoById(videoId);
+        databaseHelper.executeGetCollection(CurrentUser.getStudentID(), videoId);
     }
 
     public RecyclerView.Adapter getRecyclerBaseAdapter() {

@@ -2,15 +2,15 @@ package com.example.minidouyin.fragments;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +19,7 @@ import com.example.minidouyin.R;
 import com.example.minidouyin.activities.PlayActivity;
 import com.example.minidouyin.adapter.CollectionRecyclerAdapter;
 import com.example.minidouyin.adapter.HistoryRecyclerAdapter;
+import com.example.minidouyin.db.CollectionRecord;
 import com.example.minidouyin.db.HistoryRecord;
 import com.example.minidouyin.db.MiniDouYinDatabaseHelper;
 import com.example.minidouyin.db.VideoRecord;
@@ -34,16 +35,52 @@ public class InfoFragment extends Fragment
 	private HistoryRecyclerAdapter mHistory;
 
 	private int mHistoryCnt = 0;
+	private int mCollectionCnt = 0;
 
-	private MiniDouYinDatabaseHelper mDBHelper = new MiniDouYinDatabaseHelper(getContext());
-	private MiniDouYinDatabaseHelper.GetHistoryRecordByStudentIdTask mHistoryBySidTask;
-	private MiniDouYinDatabaseHelper.GetVideoRecordByIdTask mVideoByIDTask;
+	private MiniDouYinDatabaseHelper mDBHelperHistory = new MiniDouYinDatabaseHelper(getContext());
+	private MiniDouYinDatabaseHelper mDBHelperCollection = new MiniDouYinDatabaseHelper(getContext());
+
+	private TextView mUsername_title;
+	private TextView mUsername_editable;
+	private TextView mStudentID_title;
+	private TextView mStudentID_editable;
+	private Button mUsername_editBtn;
+	private Button mStudentID_editBtn;
 
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
 	{
 		View view = inflater.inflate(R.layout.fragment_info, container, false);
+
+		mUsername_title = view.findViewById(R.id.username_title);
+		mUsername_editable = view.findViewById(R.id.username_editable);
+		mStudentID_title = view.findViewById(R.id.studentID_title);
+		mStudentID_editable = view.findViewById(R.id.studentID_editable);
+
+		setCurrentUserInfo();
+
+		// set edit button
+		mStudentID_editBtn = view.findViewById(R.id.btn_edit_studentID);
+		mUsername_editBtn = view.findViewById(R.id.btn_edit_username);
+
+		mStudentID_editBtn.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				setCurrentUserInfo();
+			}
+		});
+
+		mUsername_editBtn.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				setCurrentUserInfo();
+			}
+		});
 
 		// collection
 		RecyclerView collectionView = view.findViewById(R.id.info_collection_recyclerView);
@@ -61,6 +98,31 @@ public class InfoFragment extends Fragment
 		mCollection.openLoadAnimation(BaseQuickAdapter.SCALEIN);
 		mCollection.isFirstOnly(false);
 		mCollection.setEmptyView(R.layout.layout_nocollection, container);
+		final List<Video> collectionVideos = new ArrayList<>();
+		mDBHelperCollection.setOnGetVideoByIdListener(new MiniDouYinDatabaseHelper.OnGetVideoByIdListener()
+		{
+			@Override
+			public void run(VideoRecord videoRecord)
+			{
+				collectionVideos.add(videoRecord.getVideo());
+				mCollectionCnt --;
+				if(mCollectionCnt == 0)
+					mCollection.setNewData(collectionVideos);
+			}
+		});
+		mDBHelperCollection.setOnGetCollectionByStudentIdListener(new MiniDouYinDatabaseHelper.OnGetCollectionByStudentIdListener()
+		{
+			@Override
+			public void run(List<CollectionRecord> collectionRecords)
+			{
+				mCollectionCnt = collectionRecords.size();
+				collectionVideos.clear();
+				for(CollectionRecord record : collectionRecords)
+				{
+					mDBHelperCollection.executeGetVideoById(record.getVideoId());
+				}
+			}
+		});
 
 		// history
 		RecyclerView historyView = view.findViewById(R.id.info_history_recyclerView);
@@ -69,7 +131,7 @@ public class InfoFragment extends Fragment
 		historyView.setAdapter(mHistory);
 
 		final List<Video> historyVideos = new ArrayList<>();
-		mDBHelper.setOnGetVideoRecordByIdListener(new MiniDouYinDatabaseHelper.OnGetVideoRecordByIdListener()
+		mDBHelperHistory.setOnGetVideoByIdListener(new MiniDouYinDatabaseHelper.OnGetVideoByIdListener()
 		{
 			@Override
 			public void run(VideoRecord videoRecord)
@@ -80,7 +142,7 @@ public class InfoFragment extends Fragment
 					mHistory.setNewData(historyVideos);
 			}
 		});
-		mDBHelper.setOnGetHistoryRecordByStudentIdListener(new MiniDouYinDatabaseHelper.OnGetHistoryRecordByStudentIdListener()
+		mDBHelperHistory.setOnGetHistoryByStudentIdListener(new MiniDouYinDatabaseHelper.OnGetHistoryByStudentIdListener()
 		{
 			@Override
 			public void run(List<HistoryRecord> historyRecords)
@@ -89,7 +151,7 @@ public class InfoFragment extends Fragment
 				historyVideos.clear();
 				for(HistoryRecord record : historyRecords)
 				{
-					mVideoByIDTask = mDBHelper.executeGetVideoRecordById(record.getVideoId());
+					mDBHelperHistory.executeGetVideoById(record.getVideoId());
 				}
 			}
 		});
@@ -108,11 +170,28 @@ public class InfoFragment extends Fragment
 	}
 
 	@Override
+	public void onDestroy()
+	{
+		super.onDestroy();
+		mDBHelperCollection.cancelAllAsyncTasks();
+		mDBHelperHistory.cancelAllAsyncTasks();
+	}
+
+	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser)
 	{
 		super.setUserVisibleHint(isVisibleToUser);
 		if (isVisibleToUser && isVisible()) {
-			mHistoryBySidTask = mDBHelper.executeGetHistoryRecordByStudentId(CurrentUser.getStudentID());
+			mDBHelperHistory.executeGetHistoryByStudentId(CurrentUser.getStudentID());
+			mDBHelperCollection.executeGetCollectionByStudentId(CurrentUser.getStudentID());
 		}
+	}
+
+	private void setCurrentUserInfo()
+	{
+		mUsername_title.setText(CurrentUser.getUsername());
+		mUsername_editable.setText(CurrentUser.getUsername());
+		mStudentID_title.setText(CurrentUser.getStudentID());
+		mStudentID_editable.setText(CurrentUser.getStudentID());
 	}
 }

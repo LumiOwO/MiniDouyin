@@ -37,6 +37,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="username"
+                    android:textColor="@color/black"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:textSize="25sp"/>
@@ -46,6 +47,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="studentID"
+                    android:textColor="@color/black"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:textSize="25sp"/>
@@ -84,12 +86,21 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/username_editable"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="username"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:textSize="20sp"/>
+
+                <Button
+                    android:id="@+id/btn_edit_username"
+                    android:layout_margin="10dp"
+                    android:text="修改"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
@@ -106,12 +117,21 @@
                     android:textSize="20sp"/>
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/studentID_editable"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:text="123456"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
                     android:textSize="20sp"/>
+
+                <Button
+                    android:id="@+id/btn_edit_studentID"
+                    android:layout_margin="10dp"
+                    android:text="修改"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 

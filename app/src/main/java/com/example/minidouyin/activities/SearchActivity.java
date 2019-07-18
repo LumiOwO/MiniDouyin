@@ -19,19 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.minidouyin.R;
-import com.example.minidouyin.adapter.HistoryRecyclerAdapter;
 import com.example.minidouyin.adapter.HotRankAdapter;
 import com.example.minidouyin.adapter.MostRankAdapter;
-import com.example.minidouyin.db.HistoryRecord;
 import com.example.minidouyin.db.MiniDouYinDatabaseHelper;
 import com.example.minidouyin.db.StudentVideoCountTuple;
 import com.example.minidouyin.db.VideoRecord;
-import com.example.minidouyin.fragments.NearbyFragment;
 import com.example.minidouyin.fragments.SearchFragment;
-import com.example.minidouyin.model.Video;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -89,10 +85,12 @@ public class SearchActivity extends AppCompatActivity {
 		mDBHelper.setOnGetVideoCountByOneListener(new MiniDouYinDatabaseHelper.OnGetVideoCountByOneListener() {
 			@Override
 			public void run(List<StudentVideoCountTuple> lists) {
+				Log.d("setOnGetVideoCountByOneListener", lists.size() + "");
 				mMostRankAdapter.setNewData(lists);
 			}
 		});
 		mDBHelper.executeGetVideoCountByOne();
+		Log.d("setOnGetVideoCountByOneListener", "over");
 
 		// hot
 		RecyclerView hotRankView = findViewById(R.id.search_hot_recyclerView);
@@ -109,10 +107,12 @@ public class SearchActivity extends AppCompatActivity {
 		mHotRankAdapter.openLoadAnimation(BaseQuickAdapter.SCALEIN);
 		mHotRankAdapter.isFirstOnly(false);
 
-		mDBHelper.setOnGetVideoCountByOneListener(new MiniDouYinDatabaseHelper.OnGetVideoCountByOneListener() {
+		mDBHelper.setOnGetVideoByHotValueRankListener(new MiniDouYinDatabaseHelper.OnGetVideoByHotValueRankListener()
+		{
 			@Override
-			public void run(List<StudentVideoCountTuple> lists) {
-//				mHotRankAdapter.setNewData(lists);
+			public void run(List<VideoRecord> videoRecords)
+			{
+				mHotRankAdapter.setNewData(videoRecords.stream().map(VideoRecord::getVideo).collect(Collectors.toList()));
 			}
 		});
 		mDBHelper.executeGetVideoCountByOne();
@@ -143,5 +143,6 @@ public class SearchActivity extends AppCompatActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+		mDBHelper.cancelAllAsyncTasks();
 	}
 }

@@ -66,10 +66,6 @@ public class VideoFragment extends Fragment {
 
 	// database
 	private MiniDouYinDatabaseHelper mMiniDouYinDatabaseHelper = new MiniDouYinDatabaseHelper(getContext());
-	private MiniDouYinDatabaseHelper.InsertVideoRecordsTask mInsertVideoRecordsTask;
-	private MiniDouYinDatabaseHelper.InsertHistoryRecordTask mInsertHistoryRecordTask;
-	private MiniDouYinDatabaseHelper.InsertCollectionRecordTask mInsertCollectionRecordTask;
-	private MiniDouYinDatabaseHelper.DeleteCollectionRecordTask mDeleteCollectionRecordTask;
 
 	@Nullable
 	@Override
@@ -87,7 +83,7 @@ public class VideoFragment extends Fragment {
 				GetVideosResponse body = (GetVideosResponse)response.body();
 				mVideoList = body.getVideos();
 				mRecyclerAdapter.setListData(mVideoList);
-				mInsertVideoRecordsTask = mMiniDouYinDatabaseHelper.executeInsertVideoRecords(mVideoList);
+				mMiniDouYinDatabaseHelper.executeInsertVideoRecords(mVideoList);
 				Log.e(TAG, "onCreateView: " + mVideoList.size());
 				mRecyclerAdapter.notifyDataSetChanged();
 			}
@@ -143,7 +139,7 @@ public class VideoFragment extends Fragment {
 				firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				HistoryRecord historyRecord = new HistoryRecord(CurrentUser.getStudentID(), mVideoList.get(firstVisibleItem).getId(), sdf.format(new Date()));
-				mInsertHistoryRecordTask = mMiniDouYinDatabaseHelper.executeInsertHistoryRecord(historyRecord);
+				mMiniDouYinDatabaseHelper.executeInsertHistory(historyRecord);
 
 				Log.d("onScrollStateChanged", "scroll");
 			}
@@ -168,9 +164,9 @@ public class VideoFragment extends Fragment {
 				int firstVisibleItem = ((LinearLayoutManager) mRecyclerView.getLayoutManager()).findFirstVisibleItemPosition();
 				CollectionRecord collectionRecord = new CollectionRecord(CurrentUser.getStudentID(), mVideoList.get(firstVisibleItem).getId());
 				if (btn.isChecked()) {
-					mInsertCollectionRecordTask = mMiniDouYinDatabaseHelper.executeInsertCollectionRecord(collectionRecord);
+					mMiniDouYinDatabaseHelper.executeInsertCollection(collectionRecord);
 				} else {
-					mDeleteCollectionRecordTask = mMiniDouYinDatabaseHelper.executeDeleteCollectionRecord(collectionRecord);
+					mMiniDouYinDatabaseHelper.executeDeleteCollection(collectionRecord);
 				}
 			}
 		};
@@ -253,15 +249,7 @@ public class VideoFragment extends Fragment {
 		GSYVideoManager.releaseAllVideos();
 		mNetManager.cancelAllCalls();
 		mHandler.removeCallbacksAndMessages(null);
-		if (mInsertVideoRecordsTask != null && !mInsertVideoRecordsTask.isCancelled()) {
-			mInsertVideoRecordsTask.cancel(true);
-		}
-		if (mInsertHistoryRecordTask != null && !mInsertHistoryRecordTask.isCancelled()) {
-			mInsertHistoryRecordTask.cancel(true);
-		}
-		if (mInsertCollectionRecordTask != null && !mInsertCollectionRecordTask.isCancelled()) {
-			mInsertCollectionRecordTask.cancel(true);
-		}
+		mMiniDouYinDatabaseHelper.cancelAllAsyncTasks();
 	}
 
 }
