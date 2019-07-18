@@ -7,5 +7,6 @@ import androidx.room.RoomDatabase;
 public abstract class MiniDouYinDatabase extends RoomDatabase {
 	public abstract VideoDao videoDao();
 	public abstract HistoryDao historyDao();
+	public abstract CollectionDao collectionDao();
 
 }

@@ -91,7 +91,7 @@ public class MiniDouYinDatabaseHelper {
 	}
 
 	public interface OnGetVideoCountByOneListener {
-		void run(List<StudentVideoCountTuple> hotValues);
+		void run(List<StudentVideoCountTuple> studentVideoCountTuples);
 	}
 
 	public GetVideoCountByOneTask executeGetVideoCountByOne() {
@@ -140,7 +140,7 @@ public class MiniDouYinDatabaseHelper {
 	}
 
 	public interface OnGetHistoryRecordByStudentIdListener {
-		void run(List<HistoryRecord> hotValues);
+		void run(List<HistoryRecord> historyRecords);
 	}
 
 	public GetHistoryRecordByStudentIdTask executeGetHistoryRecordByStudentId(String studentID) {
@@ -159,6 +159,55 @@ public class MiniDouYinDatabaseHelper {
 			super.onPostExecute(historyRecords);
 			if (mOnGetHistoryRecordByStudentIdListener != null) {
 				mOnGetHistoryRecordByStudentIdListener.run(historyRecords);
+			}
+		}
+	}
+
+	/*
+	 *
+	 * */
+	public InsertCollectionRecordTask executeInsertCollectionRecord(CollectionRecord collectionRecord) {
+		InsertCollectionRecordTask task = new InsertCollectionRecordTask();
+		return (InsertCollectionRecordTask) task.execute(collectionRecord);
+	}
+
+
+	public class InsertCollectionRecordTask extends AsyncTask<CollectionRecord, Integer, Long> {
+		@Override
+		protected Long doInBackground(CollectionRecord... collectionRecords) {
+			return getDatabase(mContext).collectionDao().insertCollectionRecord(collectionRecords[0]);
+		}
+	}
+
+	/*
+	 *
+	 * */
+	OnGetCollectionRecordByStudentIdListener mOnGetCollectionRecordByStudentIdListener;
+
+	public void setOnGetCollectionRecordByStudentIdListener(@NonNull OnGetCollectionRecordByStudentIdListener listener) {
+		mOnGetCollectionRecordByStudentIdListener = listener;
+	}
+
+	public interface OnGetCollectionRecordByStudentIdListener {
+		void run(List<CollectionRecord> historyRecords);
+	}
+
+	public GetCollectionRecordByStudentIdTask executeGetCollectionRecordByStudentId(String studentID) {
+		GetCollectionRecordByStudentIdTask task = new GetCollectionRecordByStudentIdTask();
+		return (GetCollectionRecordByStudentIdTask) task.execute(studentID);
+	}
+
+	public class GetCollectionRecordByStudentIdTask extends AsyncTask<String, Integer, List<CollectionRecord>> {
+		@Override
+		protected List<CollectionRecord> doInBackground(String... studentIds) {
+			return getDatabase(mContext).collectionDao().getCollectionRecordByStudentId(studentIds[0]);
+		}
+
+		@Override
+		protected void onPostExecute(List<CollectionRecord> collectionRecords) {
+			super.onPostExecute(collectionRecords);
+			if (mOnGetCollectionRecordByStudentIdListener != null) {
+				mOnGetCollectionRecordByStudentIdListener.run(collectionRecords);
 			}
 		}
 	}
