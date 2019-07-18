@@ -20,7 +20,7 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter {
     private List<Video> mItemDataList = new ArrayList<>();
     private Context mContext = null;
 
-    private View.OnClickListener mCollectionOnClickListener, mShareOnClickListener;
+    private View.OnClickListener[] mListeners = null;
 
     public VideoRecyclerAdapter(Context context, View.OnClickListener... listeners) {
         this.mContext = context;
@@ -34,24 +34,14 @@ public class VideoRecyclerAdapter extends RecyclerView.Adapter {
     }
 
     public void setOnClickListeners(View.OnClickListener... listeners) {
-        if (listeners != null && listeners.length > 0) {
-            mCollectionOnClickListener = listeners[0];
-            if (listeners.length > 1) {
-                mShareOnClickListener = listeners[1];
-            } else {
-                mShareOnClickListener = null;
-            }
-        } else {
-            mCollectionOnClickListener = null;
-            mShareOnClickListener = null;
-        }
+        mListeners = listeners;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                       int viewType) {
         View v = LayoutInflater.from(mContext).inflate(R.layout.layout_rv_video, parent, false);
-        final RecyclerView.ViewHolder holder = new VideoRecyclerItemHolder(mContext, v, mCollectionOnClickListener, mShareOnClickListener);
+        final RecyclerView.ViewHolder holder = new VideoRecyclerItemHolder(mContext, v, mListeners);
         return holder;
 
     }

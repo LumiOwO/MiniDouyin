@@ -37,23 +37,11 @@
 			android:layout_height="40dp"
 			android:layout_gravity="end"
 			android:layout_margin="5dp"
-			android:src="@android:color/darker_gray"
-			app:btn_color="@android:color/darker_gray"
+			android:src="@android:color/holo_red_light"
+			app:btn_color="@android:color/holo_red_light"
 			app:btn_fill_color="@android:color/holo_red_light"
 			app:allow_random_color="true"
 			app:siShape="@raw/heart"/>
-
-		<com.sackcentury.shinebuttonlib.ShineButton
-			android:id="@+id/rv_video_btn_comment"
-			android:layout_width="40dp"
-			android:layout_height="40dp"
-			android:layout_gravity="end"
-			android:layout_margin="5dp"
-			android:src="@android:color/holo_green_dark"
-			app:btn_color="@android:color/holo_green_dark"
-			app:btn_fill_color="@android:color/holo_green_dark"
-			app:allow_random_color="true"
-			app:siShape="@raw/comment"/>
 
 		<com.sackcentury.shinebuttonlib.ShineButton
 			android:id="@+id/rv_video_btn_share"

@@ -18,9 +18,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.example.minidouyin.R;
 import com.example.minidouyin.activities.PlayActivity;
 import com.example.minidouyin.adapter.CollectionRecyclerAdapter;
-import com.example.minidouyin.adapter.NearbyVideoAdapter;
+import com.example.minidouyin.adapter.HistoryRecyclerAdapter;
 import com.example.minidouyin.db.HistoryRecord;
-import com.example.minidouyin.db.MiniDouYinDatabase;
 import com.example.minidouyin.db.MiniDouYinDatabaseHelper;
 import com.example.minidouyin.db.VideoRecord;
 import com.example.minidouyin.model.CurrentUser;
@@ -32,7 +31,9 @@ import java.util.List;
 public class InfoFragment extends Fragment
 {
 	private CollectionRecyclerAdapter mCollection;
-	private CollectionRecyclerAdapter mHistory;
+	private HistoryRecyclerAdapter mHistory;
+
+	private int mHistoryCnt = 0;
 
 	private MiniDouYinDatabaseHelper mDBHelper = new MiniDouYinDatabaseHelper(getContext());
 	private MiniDouYinDatabaseHelper.GetHistoryRecordByStudentIdTask mHistoryBySidTask;
@@ -51,8 +52,6 @@ public class InfoFragment extends Fragment
 		collectionView.setAdapter(mCollection);
 
 
-//		mCollection.setNewData(list);
-
 		mCollection.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			@Override
 			public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
@@ -66,7 +65,7 @@ public class InfoFragment extends Fragment
 		// history
 		RecyclerView historyView = view.findViewById(R.id.info_history_recyclerView);
 		historyView.setLayoutManager(new LinearLayoutManager(getContext()));
-		mHistory = new CollectionRecyclerAdapter(R.layout.layout_history);
+		mHistory = new HistoryRecyclerAdapter(R.layout.layout_history);
 		historyView.setAdapter(mHistory);
 
 		final List<Video> historyVideos = new ArrayList<>();
@@ -76,6 +75,9 @@ public class InfoFragment extends Fragment
 			public void run(VideoRecord videoRecord)
 			{
 				historyVideos.add(videoRecord.getVideo());
+				mHistoryCnt --;
+				if(mHistoryCnt == 0)
+					mHistory.setNewData(historyVideos);
 			}
 		});
 		mDBHelper.setOnGetHistoryRecordByStudentIdListener(new MiniDouYinDatabaseHelper.OnGetHistoryRecordByStudentIdListener()
@@ -83,20 +85,19 @@ public class InfoFragment extends Fragment
 			@Override
 			public void run(List<HistoryRecord> historyRecords)
 			{
+				mHistoryCnt = historyRecords.size();
+				historyVideos.clear();
 				for(HistoryRecord record : historyRecords)
 				{
 					mVideoByIDTask = mDBHelper.executeGetVideoRecordById(record.getVideoId());
 				}
 			}
 		});
-		mHistoryBySidTask = mDBHelper.executeGetHistoryRecordByStudentId(CurrentUser.getStudentID());
-
-//		mHistory.setNewData();
 
 		mHistory.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
 			@Override
 			public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-				PlayActivity.launch((Activity) getContext(), mCollection.getData(), position);
+				PlayActivity.launch((Activity) getContext(), mHistory.getData(), position);
 			}
 		});
 		mHistory.openLoadAnimation(BaseQuickAdapter.SLIDEIN_RIGHT);
@@ -106,5 +107,12 @@ public class InfoFragment extends Fragment
 		return view;
 	}
 
-
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser)
+	{
+		super.setUserVisibleHint(isVisibleToUser);
+		if (isVisibleToUser && isVisible()) {
+			mHistoryBySidTask = mDBHelper.executeGetHistoryRecordByStudentId(CurrentUser.getStudentID());
+		}
+	}
 }

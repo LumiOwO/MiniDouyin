@@ -46,6 +46,7 @@ public class VideoFragment extends Fragment {
 	private static final String TAG = "VideoFragment";
 
 	private NetManager mNetManager = new NetManager();
+	private boolean canFresh = true;
 
 	@BindView(R.id.refresh_layout)
 	SmartRefreshLayout mRefreshLayout;
@@ -61,7 +62,7 @@ public class VideoFragment extends Fragment {
 
 	private Handler mHandler = new Handler();
 
-	private View.OnClickListener mCollectionOnClickListener, mShareOnClickListener;
+	private View.OnClickListener mCollectionOnClickListener, mShareOnClickListener, mHeartOnClickListener;
 
 	// database
 	private MiniDouYinDatabaseHelper mMiniDouYinDatabaseHelper = new MiniDouYinDatabaseHelper(getContext());
@@ -77,6 +78,10 @@ public class VideoFragment extends Fragment {
 
 		ButterKnife.bind(this, view);
 
+		initVideoList();
+		setOnClickListeners();
+		initRecyclerView();
+
 		mNetManager.setOnGetListener(response -> {
 			if (response.isSuccessful() && response.body() != null) {
 				GetVideosResponse body = (GetVideosResponse)response.body();
@@ -89,19 +94,22 @@ public class VideoFragment extends Fragment {
 			Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
 			mRefreshLayout.finishRefresh();
 			playFirstVideo();
+//			Log.d(TAG, "initVideoList: " + mVideoList.size());
 		});
 
-		mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
-			@Override
-			public void onRefresh(@NonNull RefreshLayout refreshLayout) {
-				mNetManager.execGetFeeds();
-			}
-		});
-		mRefreshLayout.setRefreshHeader(new MaterialHeader(getContext()));
-
-		initVideoList();
-		setOnClickListeners();
-		initRecyclerView();
+		if(canFresh) {
+			mRefreshLayout.setOnRefreshListener(new OnRefreshListener()
+			{
+				@Override
+				public void onRefresh(@NonNull RefreshLayout refreshLayout)
+				{
+					mNetManager.execGetFeeds();
+				}
+			});
+			mRefreshLayout.setRefreshHeader(new MaterialHeader(getContext()));
+		} else {
+			mRefreshLayout.setEnableRefresh(false);
+		}
 
 		Log.d("start", mStartPosition + "");
 		mRecyclerView.getLayoutManager().scrollToPosition(mStartPosition);
@@ -113,7 +121,7 @@ public class VideoFragment extends Fragment {
 	{
 		final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
 		mRecyclerView.setLayoutManager(linearLayoutManager);
-		mRecyclerAdapter = new VideoRecyclerAdapter(getContext(), mVideoList, mCollectionOnClickListener, mShareOnClickListener);
+		mRecyclerAdapter = new VideoRecyclerAdapter(getContext(), mVideoList, mCollectionOnClickListener, mHeartOnClickListener, mShareOnClickListener);
 		mRecyclerView.setAdapter(mRecyclerAdapter);
 		PagerSnapHelper snapHelper = new PagerSnapHelper();
 		snapHelper.attachToRecyclerView(mRecyclerView);
@@ -136,6 +144,8 @@ public class VideoFragment extends Fragment {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				HistoryRecord historyRecord = new HistoryRecord(CurrentUser.getStudentID(), mVideoList.get(firstVisibleItem).getId(), sdf.format(new Date()));
 				mInsertHistoryRecordTask = mMiniDouYinDatabaseHelper.executeInsertHistoryRecord(historyRecord);
+
+				Log.d("onScrollStateChanged", "scroll");
 			}
 
 			@Override
@@ -165,10 +175,21 @@ public class VideoFragment extends Fragment {
 			}
 		};
 
+		mHeartOnClickListener = new View.OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				if(((ShineButton)v).isChecked())
+					((ShineButton)v).setChecked(false);
+			}
+		};
+
 		mShareOnClickListener = new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-
+				if(((ShineButton)v).isChecked())
+					((ShineButton)v).setChecked(false);
 			}
 		};
 	}
@@ -185,6 +206,7 @@ public class VideoFragment extends Fragment {
 	private void initVideoList() {
 		// get bundle arguments
 		Bundle bundle = getArguments();
+		canFresh = bundle.getBoolean("canFresh");
 		List<Video> playlist = (List<Video>)bundle.getSerializable("playlist");
 		if(playlist == null) {
 			Toast.makeText(getContext(), "开始刷新", Toast.LENGTH_SHORT).show();
@@ -197,14 +219,15 @@ public class VideoFragment extends Fragment {
 
 	public static VideoFragment launch()
 	{
-		return launch(null, -1);
+		return launch(null, -1, true);
 	}
 
-	public static VideoFragment launch(List<Video> playList, int startPosition)
+	public static VideoFragment launch(List<Video> playList, int startPosition, boolean canFresh)
 	{
 		Bundle bundle = new Bundle();
 		bundle.putSerializable("playlist", (Serializable) playList);
 		bundle.putInt("startPosition", startPosition);
+		bundle.putBoolean("canFresh", canFresh);
 
 		VideoFragment fragment = new VideoFragment();
 		fragment.setArguments(bundle);

@@ -39,9 +39,6 @@ public class VideoRecyclerItemHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.rv_video_btn_like)
     ShineButton mBtnLike;
 
-    @BindView(R.id.rv_video_btn_comment)
-    ShineButton mBtnComment;
-
     @BindView(R.id.rv_video_btn_share)
     ShineButton mBtnShare;
 
@@ -55,9 +52,9 @@ public class VideoRecyclerItemHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, v);
         mBtnFollow.init((Activity)context);
         mBtnLike.init((Activity)context);
-        mBtnComment.init((Activity)context);
         mBtnShare.init((Activity)context);
         setOnClickListeners(listeners);
+
         imageView = new ImageView(context);
         gsyVideoOptionBuilder = new GSYVideoOptionBuilder();
     }
@@ -66,7 +63,10 @@ public class VideoRecyclerItemHolder extends RecyclerView.ViewHolder {
         if (listeners != null && listeners.length > 0) {
             mBtnFollow.setOnClickListener(listeners[0]);
             if (listeners.length > 1) {
-                mBtnShare.setOnClickListener(listeners[1]);
+                mBtnLike.setOnClickListener(listeners[1]);
+                if (listeners.length > 2) {
+                    mBtnShare.setOnClickListener(listeners[2]);
+                }
             }
         }
     }
