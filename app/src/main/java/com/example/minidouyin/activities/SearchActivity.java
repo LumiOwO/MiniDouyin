@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.minidouyin.R;
 import com.example.minidouyin.fragments.NearbyFragment;
-import com.example.minidouyin.fragments.VideoFragment;
+import com.example.minidouyin.fragments.SearchFragment;
 
 public class SearchActivity extends AppCompatActivity {
 
@@ -53,7 +53,7 @@ public class SearchActivity extends AppCompatActivity {
 		mSearchText = findViewById(R.id.search_et_search);
 
 		FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-		transaction.add(R.id.search_placeholder, VideoFragment.launch());
+		transaction.add(R.id.search_placeholder, new SearchFragment());
 		transaction.commit();
 
 		mBackButton.setOnClickListener(mBackToMainListener);

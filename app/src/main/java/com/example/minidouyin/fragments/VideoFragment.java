@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.minidouyin.R;
 import com.example.minidouyin.adapter.VideoRecyclerAdapter;
+import com.example.minidouyin.db.MiniDouYinDatabaseHelper;
 import com.example.minidouyin.model.Video;
 import com.example.minidouyin.net.NetManager;
 import com.example.minidouyin.net.response.GetVideosResponse;
@@ -55,6 +56,9 @@ public class VideoFragment extends Fragment {
 
 	private Handler mHandler = new Handler();
 
+	// database
+	private MiniDouYinDatabaseHelper mMiniDouYinDatabaseHelper = new MiniDouYinDatabaseHelper(getContext());
+	private MiniDouYinDatabaseHelper.InsertVideoRecordsTask mInsertVideoRecordsTask;
 
 	@Nullable
 	@Override
@@ -68,11 +72,14 @@ public class VideoFragment extends Fragment {
 				GetVideosResponse body = (GetVideosResponse)response.body();
 				mVideoList = body.getVideos();
 				mRecyclerAdapter.setListData(mVideoList);
+				mInsertVideoRecordsTask = mMiniDouYinDatabaseHelper.executeInsertVideoRecords(mVideoList);
+				Log.e(TAG, "onCreateView: " + mVideoList.size());
 				mRecyclerAdapter.notifyDataSetChanged();
 			}
-			Toast.makeText(getContext(), "refresh success", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getContext(), "刷新成功", Toast.LENGTH_SHORT).show();
 			mRefreshLayout.finishRefresh();
-			Log.d(TAG, "initVideoList: " + mVideoList.size());
+			playFirstVideo();
+//			Log.d(TAG, "initVideoList: " + mVideoList.size());
 		});
 
 		mRefreshLayout.setOnRefreshListener(new OnRefreshListener() {
@@ -113,7 +120,7 @@ public class VideoFragment extends Fragment {
 			@Override
 			public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
 				super.onScrollStateChanged(recyclerView, newState);
-				Log.e(TAG, "onScrollStateChanged");
+//				Log.e(TAG, "onScrollStateChanged");
 				mScrollCalculatorHelper.onScrollStateChanged(recyclerView, newState);
 			}
 
@@ -122,11 +129,15 @@ public class VideoFragment extends Fragment {
 				super.onScrolled(recyclerView, dx, dy);
 				firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
 				lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition();
-				Log.e(TAG, "onScrolled: " + firstVisibleItem + " " + lastVisibleItem);
+//				Log.e(TAG, "onScrolled: " + firstVisibleItem + " " + lastVisibleItem);
 				mScrollCalculatorHelper.onScroll(recyclerView, firstVisibleItem, lastVisibleItem, lastVisibleItem - firstVisibleItem + 1);
 			}
 		});
 
+		playFirstVideo();
+	}
+
+	private void playFirstVideo() {
 		mHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -140,7 +151,7 @@ public class VideoFragment extends Fragment {
 		Bundle bundle = getArguments();
 		List<Video> playlist = (List<Video>)bundle.getSerializable("playlist");
 		if(playlist == null) {
-			Toast.makeText(getContext(), "refresh begin", Toast.LENGTH_SHORT).show();
+			Toast.makeText(getContext(), "开始刷新", Toast.LENGTH_SHORT).show();
 			mNetManager.execGetFeeds();
 		} else {
 			mVideoList = playlist;
@@ -183,5 +194,9 @@ public class VideoFragment extends Fragment {
 		GSYVideoManager.releaseAllVideos();
 		mNetManager.cancelAllCalls();
 		mHandler.removeCallbacksAndMessages(null);
+		if (mInsertVideoRecordsTask != null && !mInsertVideoRecordsTask.isCancelled()) {
+			mInsertVideoRecordsTask.cancel(true);
+		}
 	}
+
 }

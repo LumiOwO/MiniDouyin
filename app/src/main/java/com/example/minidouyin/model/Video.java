@@ -1,14 +1,13 @@
 package com.example.minidouyin.model;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
-import androidx.room.PrimaryKey;
 
+import com.example.minidouyin.db.VideoRecord;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Random;
 
 public class Video implements Serializable
 {
@@ -28,7 +27,7 @@ public class Video implements Serializable
 	@SerializedName("video_url")
 	private String mVideoUrl;
 
-	@PrimaryKey
+	@NonNull
 	@ColumnInfo(name = "id")
 	@SerializedName("_id")
 	private String mId;
@@ -58,6 +57,14 @@ public class Video implements Serializable
 		mUsername = userName;
 		mImageUrl = imageUrl;
 		mVideoUrl = videoUrl;
+	}
+
+	public String getId() {
+		return mId;
+	}
+
+	public void setId(String id) {
+		mId = id;
 	}
 
 	public String getStudentId() {
@@ -92,30 +99,24 @@ public class Video implements Serializable
 		this.mVideoUrl = videoUrl;
 	}
 
-	public Date getCreatedAt() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ssz");
-		Date date = new Date();
-		try {
-			date = sdf.parse(mCreatedAt);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return date;
+	public String getCreatedAt() {
+		return mCreatedAt;
 	}
 
-	public Date getUpdatedAt() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-ddTHH:mm:ssz");
-		Date date = new Date();
-		try {
-			date = sdf.parse(mUpdatedAt);
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		return date;
+	public void setCreatedAt(String mCreatedAt) {
+		this.mCreatedAt = mCreatedAt;
 	}
 
-	public int getImageWidth() {
-		return Integer.parseInt(mImageWidth);
+	public String getUpdatedAt() {
+		return mUpdatedAt;
+	}
+
+	public void setUpdatedAt(String updatedAt) {
+		mUpdatedAt = updatedAt;
+	}
+
+	public String getImageWidth() {
+		return mImageWidth;
 	}
 
 	public void setImageWidth(int imageWidth) {
@@ -126,8 +127,8 @@ public class Video implements Serializable
 		mImageWidth = imageWidth;
 	}
 
-	public int getImageHeight() {
-		return Integer.parseInt(mImageHeight);
+	public String getImageHeight() {
+		return mImageHeight;
 	}
 
 	public void setImageHeight(int imageHeight) {
@@ -152,5 +153,10 @@ public class Video implements Serializable
 				", image_w=" + mImageWidth +
 				", image_h=" + mImageHeight +
 				'}';
+	}
+
+	public VideoRecord createRecord() {
+		Random random = new Random(System.currentTimeMillis());
+		return new VideoRecord(this, random.nextInt(100));
 	}
 }
