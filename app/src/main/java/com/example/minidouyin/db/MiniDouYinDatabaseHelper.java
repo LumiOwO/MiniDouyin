@@ -8,6 +8,7 @@ import androidx.room.Room;
 
 import com.example.minidouyin.model.Video;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,8 @@ public class MiniDouYinDatabaseHelper {
 	private Context mContext;
 
 	private static MiniDouYinDatabase mDatabase;
+
+	private List<AsyncTask> mAsyncTasks = new ArrayList<>();
 
 	public MiniDouYinDatabaseHelper(Context context) {
 		mContext = context;
@@ -28,12 +31,19 @@ public class MiniDouYinDatabaseHelper {
 		return mDatabase;
 	}
 
+	public void cancelAllAsyncTasks() {
+		for (AsyncTask task : mAsyncTasks) {
+			if (task != null && !task.isCancelled()) {
+				task.cancel(true);
+			}
+			mAsyncTasks.remove(task);
+		}
+	}
 
 	/*
 	 *
 	 * */
-
-	OnGetVideoRecordByIdListener mOnGetVideoRecordByIdListener;
+	private OnGetVideoRecordByIdListener mOnGetVideoRecordByIdListener;
 
 	public void setOnGetVideoRecordByIdListener(@NonNull OnGetVideoRecordByIdListener listener) {
 		mOnGetVideoRecordByIdListener = listener;
@@ -45,6 +55,7 @@ public class MiniDouYinDatabaseHelper {
 
 	public GetVideoRecordByIdTask executeGetVideoRecordById(String videoId) {
 		GetVideoRecordByIdTask task = new GetVideoRecordByIdTask();
+		mAsyncTasks.add(task);
 		return (GetVideoRecordByIdTask) task.execute(videoId);
 	}
 
@@ -57,6 +68,7 @@ public class MiniDouYinDatabaseHelper {
 		@Override
 		protected void onPostExecute(VideoRecord lists) {
 			super.onPostExecute(lists);
+			mAsyncTasks.remove(this);
 			if (mOnGetVideoRecordByIdListener != null) {
 				mOnGetVideoRecordByIdListener.run(lists);
 			}
@@ -67,7 +79,7 @@ public class MiniDouYinDatabaseHelper {
 	 *
 	 * */
 
-	OnGetVideoRecordByStudentIdListener mOnGetVideoRecordByStudentIdListener;
+	private OnGetVideoRecordByStudentIdListener mOnGetVideoRecordByStudentIdListener;
 
 	public void setOnGetVideoRecordByStudentIdListener(@NonNull OnGetVideoRecordByStudentIdListener listener) {
 		mOnGetVideoRecordByStudentIdListener = listener;
@@ -79,6 +91,7 @@ public class MiniDouYinDatabaseHelper {
 
 	public GetVideoRecordByStudentIdTask executeGetVideoRecordByStudentId(String studentId) {
 		GetVideoRecordByStudentIdTask task = new GetVideoRecordByStudentIdTask();
+		mAsyncTasks.add(task);
 		return (GetVideoRecordByStudentIdTask) task.execute(studentId);
 	}
 
@@ -92,6 +105,7 @@ public class MiniDouYinDatabaseHelper {
 		protected void onPostExecute(List<VideoRecord> lists) {
 			super.onPostExecute(lists);
 			if (mOnGetVideoRecordByStudentIdListener != null) {
+				mAsyncTasks.remove(this);
 				mOnGetVideoRecordByStudentIdListener.run(lists);
 			}
 		}
@@ -118,7 +132,7 @@ public class MiniDouYinDatabaseHelper {
 	/*
 	 *
 	 * */
-	OnGetVideoCountByOneListener mOnGetVideoCountByOneListener;
+	private OnGetVideoCountByOneListener mOnGetVideoCountByOneListener;
 
 	public void setOnGetVideoCountByOneListener(@NonNull OnGetVideoCountByOneListener listener) {
 		mOnGetVideoCountByOneListener = listener;
@@ -129,12 +143,12 @@ public class MiniDouYinDatabaseHelper {
 	}
 
 	public GetVideoCountByOneTask executeGetVideoCountByOne() {
-		GetVideoCountByOneTask task = new GetVideoCountByOneTask();
-		return (GetVideoCountByOneTask) task.execute(5);
+		return executeGetVideoCountByOne(5);
 	}
 
 	public GetVideoCountByOneTask executeGetVideoCountByOne(int limit) {
 		GetVideoCountByOneTask task = new GetVideoCountByOneTask();
+		mAsyncTasks.add(task);
 		return (GetVideoCountByOneTask) task.execute(limit);
 	}
 
@@ -147,6 +161,7 @@ public class MiniDouYinDatabaseHelper {
 		@Override
 		protected void onPostExecute(List<StudentVideoCountTuple> lists) {
 			super.onPostExecute(lists);
+			mAsyncTasks.remove(this);
 			if (mOnGetVideoCountByOneListener != null) {
 				mOnGetVideoCountByOneListener.run(lists);
 			}
@@ -156,7 +171,7 @@ public class MiniDouYinDatabaseHelper {
 	/*
 	 *
 	 * */
-	OnGetVideoRecordByHotValueRankListener mOnGetVideoRecordByHotValueRankListener;
+	private OnGetVideoRecordByHotValueRankListener mOnGetVideoRecordByHotValueRankListener;
 
 	public void setOnGetVideoRecordByHotValueRankListener(@NonNull OnGetVideoRecordByHotValueRankListener listener) {
 		mOnGetVideoRecordByHotValueRankListener = listener;
@@ -167,12 +182,12 @@ public class MiniDouYinDatabaseHelper {
 	}
 
 	public GetVideoRecordByHotValueRankTask executeGetVideoRecordByHotValueRank() {
-		GetVideoRecordByHotValueRankTask task = new GetVideoRecordByHotValueRankTask();
-		return (GetVideoRecordByHotValueRankTask) task.execute(10);
+		return executeGetVideoRecordByHotValueRank(10);
 	}
 
 	public GetVideoRecordByHotValueRankTask executeGetVideoRecordByHotValueRank(int limit) {
 		GetVideoRecordByHotValueRankTask task = new GetVideoRecordByHotValueRankTask();
+		mAsyncTasks.add(task);
 		return (GetVideoRecordByHotValueRankTask) task.execute(limit);
 	}
 
@@ -185,6 +200,7 @@ public class MiniDouYinDatabaseHelper {
 		@Override
 		protected void onPostExecute(List<VideoRecord> lists) {
 			super.onPostExecute(lists);
+			mAsyncTasks.remove(this);
 			if (mOnGetVideoRecordByHotValueRankListener != null) {
 				mOnGetVideoRecordByHotValueRankListener.run(lists);
 			}
@@ -196,6 +212,7 @@ public class MiniDouYinDatabaseHelper {
 	 * */
 	public InsertHistoryRecordTask executeInsertHistoryRecord(HistoryRecord historyRecord) {
 		InsertHistoryRecordTask task = new InsertHistoryRecordTask();
+		mAsyncTasks.add(task);
 		return (InsertHistoryRecordTask) task.execute(historyRecord);
 	}
 
@@ -205,12 +222,18 @@ public class MiniDouYinDatabaseHelper {
 		protected Long doInBackground(HistoryRecord... historyRecords) {
 			return getDatabase(mContext).historyDao().insertHistoryRecord(historyRecords[0]);
 		}
+
+		@Override
+		protected void onPostExecute(Long aLong) {
+			super.onPostExecute(aLong);
+			mAsyncTasks.remove(this);
+		}
 	}
 
 	/*
 	 *
 	 * */
-	OnGetHistoryRecordByStudentIdListener mOnGetHistoryRecordByStudentIdListener;
+	private OnGetHistoryRecordByStudentIdListener mOnGetHistoryRecordByStudentIdListener;
 
 	public void setOnGetHistoryRecordByStudentIdListener(@NonNull OnGetHistoryRecordByStudentIdListener listener) {
 		mOnGetHistoryRecordByStudentIdListener = listener;
@@ -222,6 +245,7 @@ public class MiniDouYinDatabaseHelper {
 
 	public GetHistoryRecordByStudentIdTask executeGetHistoryRecordByStudentId(String studentID) {
 		GetHistoryRecordByStudentIdTask task = new GetHistoryRecordByStudentIdTask();
+		mAsyncTasks.add(task);
 		return (GetHistoryRecordByStudentIdTask) task.execute(studentID);
 	}
 
@@ -234,6 +258,7 @@ public class MiniDouYinDatabaseHelper {
 		@Override
 		protected void onPostExecute(List<HistoryRecord> historyRecords) {
 			super.onPostExecute(historyRecords);
+			mAsyncTasks.remove(this);
 			if (mOnGetHistoryRecordByStudentIdListener != null) {
 				mOnGetHistoryRecordByStudentIdListener.run(historyRecords);
 			}
@@ -245,6 +270,7 @@ public class MiniDouYinDatabaseHelper {
 	 * */
 	public DeleteCollectionRecordTask executeDeleteCollectionRecord(CollectionRecord collectionRecord) {
 		DeleteCollectionRecordTask task = new DeleteCollectionRecordTask();
+		mAsyncTasks.add(task);
 		return (DeleteCollectionRecordTask) task.execute(collectionRecord);
 	}
 
@@ -254,6 +280,12 @@ public class MiniDouYinDatabaseHelper {
 		protected Integer doInBackground(CollectionRecord... collectionRecords) {
 			return getDatabase(mContext).collectionDao().deleteCollectionRecord(collectionRecords[0]);
 		}
+
+		@Override
+		protected void onPostExecute(Integer integer) {
+			super.onPostExecute(integer);
+			mAsyncTasks.remove(this);
+		}
 	}
 
 	/*
@@ -261,6 +293,7 @@ public class MiniDouYinDatabaseHelper {
 	 * */
 	public InsertCollectionRecordTask executeInsertCollectionRecord(CollectionRecord collectionRecord) {
 		InsertCollectionRecordTask task = new InsertCollectionRecordTask();
+		mAsyncTasks.add(task);
 		return (InsertCollectionRecordTask) task.execute(collectionRecord);
 	}
 
@@ -270,12 +303,18 @@ public class MiniDouYinDatabaseHelper {
 		protected Long doInBackground(CollectionRecord... collectionRecords) {
 			return getDatabase(mContext).collectionDao().insertCollectionRecord(collectionRecords[0]);
 		}
+
+		@Override
+		protected void onPostExecute(Long aLong) {
+			super.onPostExecute(aLong);
+			mAsyncTasks.remove(this);
+		}
 	}
 
 	/*
 	 *
 	 * */
-	OnGetCollectionRecordByStudentIdListener mOnGetCollectionRecordByStudentIdListener;
+	private OnGetCollectionRecordByStudentIdListener mOnGetCollectionRecordByStudentIdListener;
 
 	public void setOnGetCollectionRecordByStudentIdListener(@NonNull OnGetCollectionRecordByStudentIdListener listener) {
 		mOnGetCollectionRecordByStudentIdListener = listener;
@@ -287,6 +326,7 @@ public class MiniDouYinDatabaseHelper {
 
 	public GetCollectionRecordByStudentIdTask executeGetCollectionRecordByStudentId(String studentId) {
 		GetCollectionRecordByStudentIdTask task = new GetCollectionRecordByStudentIdTask();
+		mAsyncTasks.add(task);
 		return (GetCollectionRecordByStudentIdTask) task.execute(studentId);
 	}
 
@@ -299,6 +339,7 @@ public class MiniDouYinDatabaseHelper {
 		@Override
 		protected void onPostExecute(List<CollectionRecord> collectionRecords) {
 			super.onPostExecute(collectionRecords);
+			mAsyncTasks.remove(this);
 			if (mOnGetCollectionRecordByStudentIdListener != null) {
 				mOnGetCollectionRecordByStudentIdListener.run(collectionRecords);
 			}
@@ -308,7 +349,7 @@ public class MiniDouYinDatabaseHelper {
 	/*
 	 *
 	 * */
-	OnGetCollectionRecordListener mOnGetCollectionRecordListener;
+	private OnGetCollectionRecordListener mOnGetCollectionRecordListener;
 
 	public void setOnGetCollectionRecordListener(@NonNull OnGetCollectionRecordListener listener) {
 		mOnGetCollectionRecordListener = listener;
@@ -320,6 +361,7 @@ public class MiniDouYinDatabaseHelper {
 
 	public GetCollectionRecordTask executeGetCollectionRecord(String studentId, String videoId) {
 		GetCollectionRecordTask task = new GetCollectionRecordTask();
+		mAsyncTasks.add(task);
 		return (GetCollectionRecordTask) task.execute(studentId, videoId);
 	}
 
@@ -332,10 +374,48 @@ public class MiniDouYinDatabaseHelper {
 		@Override
 		protected void onPostExecute(CollectionRecord collectionRecord) {
 			super.onPostExecute(collectionRecord);
+			mAsyncTasks.remove(this);
 			if (mOnGetCollectionRecordListener != null) {
 				mOnGetCollectionRecordListener.run(collectionRecord);
 			}
 		}
 	}
+
+	/*
+	 *
+	 * */
+	private OnDeleteAllHistroyListener mOnDeleteAllHistroyListener;
+
+	public interface OnDeleteAllHistroyListener {
+		void run(int affectedCount);
+	}
+
+	public void setOnDeleteHistoryListener(OnDeleteAllHistroyListener listener) {
+		mOnDeleteAllHistroyListener = listener;
+	}
+
+	public DeleteAllHistoryTask executeDeleteAllHistory() {
+		DeleteAllHistoryTask task = new DeleteAllHistoryTask();
+		mAsyncTasks.add(task);
+		return (DeleteAllHistoryTask) task.execute();
+	}
+
+	public class DeleteAllHistoryTask extends AsyncTask<Void, Integer, Integer> {
+
+		@Override
+		protected Integer doInBackground(Void... voids) {
+			return getDatabase(mContext).historyDao().deleteAllHistoryRecord();
+		}
+
+		@Override
+		protected void onPostExecute(Integer integer) {
+			super.onPostExecute(integer);
+			mAsyncTasks.remove(this);
+			if (mOnDeleteAllHistroyListener != null) {
+				mOnDeleteAllHistroyListener.run(integer);
+			}
+		}
+	}
+
 
 }

@@ -19,4 +19,7 @@ public interface HistoryDao {
 
 	@Delete
 	public int deleteHistoryRecord(HistoryRecord historyRecord);
+
+	@Query("delete from history")
+	public int deleteAllHistoryRecord();
 }
