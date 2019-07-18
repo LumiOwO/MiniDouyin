@@ -97,7 +97,19 @@ public class InfoFragment extends Fragment
 			@Override
 			public void onClick(View v)
 			{
-				setCurrentUserInfo();
+				new MaterialDialog.Builder(getActivity())
+						.inputType(InputType.TYPE_CLASS_TEXT)
+						.input(
+								"请输入你的用户名",
+								"",
+								new MaterialDialog.InputCallback() {
+									@Override
+									public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+										CurrentUser.setStudentID(input.toString());
+										setCurrentUserInfo();
+									}
+								})
+						.show();
 			}
 		});
 
@@ -107,15 +119,18 @@ public class InfoFragment extends Fragment
 			public void onClick(View v)
 			{
 				List<Video> videos = mHistory.getData();
-				List<HistoryRecord> records = new ArrayList<>();
 				for(int i=0; i<videos.size(); i++)
 				{
-					records.add(new HistoryRecord(
+					HistoryRecord record = new HistoryRecord(
 							CurrentUser.getStudentID(),
 							videos.get(i).getId(),
-							mHistoryRecords.get(i).getTime()));
+							mHistoryRecords.get(i).getTime());
+
+					mDBHelperHistory.executeDeleteHistory(record);
 				}
-				mDBHelperHistory.executeDeleteHistories(records);
+
+				mHistoryRecords.clear();
+				refreshData();
 			}
 		});
 
@@ -141,10 +156,11 @@ public class InfoFragment extends Fragment
 			@Override
 			public void run(VideoRecord videoRecord)
 			{
-				collectionVideos.add(videoRecord.getVideo());
-				mCollectionCnt --;
 				if(mCollectionCnt == 0)
 					mCollection.setNewData(collectionVideos);
+
+				collectionVideos.add(videoRecord.getVideo());
+				mCollectionCnt --;
 			}
 		});
 		mDBHelperCollection.setOnGetCollectionByStudentIdListener(new MiniDouYinDatabaseHelper.OnGetCollectionByStudentIdListener()
@@ -173,10 +189,11 @@ public class InfoFragment extends Fragment
 			@Override
 			public void run(VideoRecord videoRecord)
 			{
-				historyVideos.add(videoRecord.getVideo());
-				mHistoryCnt --;
 				if(mHistoryCnt == 0)
 					mHistory.setNewData(historyVideos);
+
+				historyVideos.add(videoRecord.getVideo());
+				mHistoryCnt --;
 			}
 		});
 		mDBHelperHistory.setOnGetHistoryByStudentIdListener(new MiniDouYinDatabaseHelper.OnGetHistoryByStudentIdListener()
