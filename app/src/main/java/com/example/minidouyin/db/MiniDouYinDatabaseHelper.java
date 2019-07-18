@@ -484,4 +484,27 @@ public class MiniDouYinDatabaseHelper {
 			mAsyncTasks.remove(this);
 		}
 	}
+
+	/*
+	 *
+	 * */
+	public HotValueIncrementTask executeHotValueIncrement(String videoId) {
+		HotValueIncrementTask task = new HotValueIncrementTask();
+		mAsyncTasks.add(task);
+		return (HotValueIncrementTask) task.execute(videoId);
+	}
+
+	public class HotValueIncrementTask extends AsyncTask<String, Integer, Long> {
+
+		@Override
+		protected Long doInBackground(String... videoIds) {
+			return getDatabase(mContext).videoDao().hotValueIncrement(videoIds[0]);
+		}
+
+		@Override
+		protected void onPostExecute(Long aLong) {
+			super.onPostExecute(aLong);
+			mAsyncTasks.remove(this);
+		}
+	}
 }
