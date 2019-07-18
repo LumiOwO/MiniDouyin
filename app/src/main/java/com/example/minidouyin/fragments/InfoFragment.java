@@ -51,6 +51,8 @@ public class InfoFragment extends Fragment
 	private Button mStudentID_editBtn;
 	private ImageButton mDelete_History_Btn;
 
+	private List<HistoryRecord> mHistoryRecords = new ArrayList<>();
+
 	@Nullable
 	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState)
@@ -74,15 +76,19 @@ public class InfoFragment extends Fragment
 			@Override
 			public void onClick(View v)
 			{
-//				new MaterialDialog.Builder(getActivity())
-//					.inputType(InputType.TYPE_CLASS_NUMBER)
-//					.input(getString(R.string.duration_hint), durationSelector.getText(), new MaterialDialog.InputCallback() {
-//						@Override
-//						public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-//							onDurationChanged(input.toString());
-//						}
-//					})
-//					.show();
+				new MaterialDialog.Builder(getActivity())
+					.inputType(InputType.TYPE_CLASS_TEXT)
+					.input(
+							"请输入你的学号",
+							"",
+							new MaterialDialog.InputCallback() {
+								@Override
+								public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+									CurrentUser.setStudentID(input.toString());
+									setCurrentUserInfo();
+						}
+					})
+					.show();
 			}
 		});
 
@@ -100,7 +106,16 @@ public class InfoFragment extends Fragment
 			@Override
 			public void onClick(View v)
 			{
-
+				List<Video> videos = mHistory.getData();
+				List<HistoryRecord> records = new ArrayList<>();
+				for(int i=0; i<videos.size(); i++)
+				{
+					records.add(new HistoryRecord(
+							CurrentUser.getStudentID(),
+							videos.get(i).getId(),
+							mHistoryRecords.get(i).getTime()));
+				}
+				mDBHelperHistory.executeDeleteHistories(records);
 			}
 		});
 
@@ -170,6 +185,7 @@ public class InfoFragment extends Fragment
 			public void run(List<HistoryRecord> historyRecords)
 			{
 				mHistoryCnt = historyRecords.size();
+				mHistoryRecords = historyRecords;
 				historyVideos.clear();
 				for(HistoryRecord record : historyRecords)
 				{
