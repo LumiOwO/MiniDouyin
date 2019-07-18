@@ -18,10 +18,6 @@ public class VideoRecord {
 	@ColumnInfo(name = "hot_value")
 	private int mHotValue;
 
-	public VideoRecord() {
-
-	}
-
 	public VideoRecord(Video video, int hotValue) {
 		mVideo = video;
 		mHotValue = hotValue;

@@ -19,6 +19,7 @@ import com.example.minidouyin.R;
 import com.example.minidouyin.adapter.VideoRecyclerAdapter;
 import com.example.minidouyin.db.HistoryRecord;
 import com.example.minidouyin.db.MiniDouYinDatabaseHelper;
+import com.example.minidouyin.model.CurrentUser;
 import com.example.minidouyin.model.Video;
 import com.example.minidouyin.net.NetManager;
 import com.example.minidouyin.net.response.GetVideosResponse;
@@ -127,7 +128,7 @@ public class VideoFragment extends Fragment {
 
 				firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				HistoryRecord historyRecord = new HistoryRecord("", mVideoList.get(firstVisibleItem).getId(), sdf.format(new Date()));
+				HistoryRecord historyRecord = new HistoryRecord(CurrentUser.getStudentID(), mVideoList.get(firstVisibleItem).getId(), sdf.format(new Date()));
 				mInsertHistoryRecordTask = mMiniDouYinDatabaseHelper.executeInsertHistoryRecord(historyRecord);
 			}
 

@@ -1,14 +1,17 @@
 package com.example.minidouyin.db;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 
 @Entity(tableName = "history", primaryKeys = {"stuid", "video_id"})
 public class HistoryRecord {
 
+	@NonNull
 	@ColumnInfo(name = "stuid")
 	private String mStudentId;
 
+	@NonNull
 	@ColumnInfo(name = "video_id")
 	private String mVideoId;
 
