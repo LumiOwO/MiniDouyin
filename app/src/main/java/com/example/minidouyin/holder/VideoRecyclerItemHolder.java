@@ -109,12 +109,12 @@ public class VideoRecyclerItemHolder extends RecyclerView.ViewHolder {
 
         gsyVideoOptionBuilder.setUrl(video.getVideoUrl()).build(gsyVideoPlayer);
         gsyVideoPlayer.setLooping(true);
+
         ImageView imageView = new ImageView(context);
         Glide.with(context)
                 .setDefaultRequestOptions(
                         new RequestOptions()
                                 .frame(0)
-                                .centerCrop()
                 )
                 .load(video.getVideoUrl())
                 .into(imageView);
