@@ -13,8 +13,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class NetManager
-{
+public class NetManager {
 	// network
 	private Retrofit mRetrofit;
 	private IMiniDouyinService mService;
@@ -24,57 +23,56 @@ public class NetManager
 	private OnNetListener mPostListener;
 	private List<Call> mCallList = new ArrayList<>();
 
-	public NetManager()
-	{
+	public NetManager() {
 		mRetrofit = new Retrofit.Builder()
 				.baseUrl(IMiniDouyinService.BASE_URL)
 				.addConverterFactory(GsonConverterFactory.create())
 				.build();
 		mService = mRetrofit.create(IMiniDouyinService.class);
+
 	}
 
-	public void setOnGetListener(OnNetListener listener)
-	{
+	public void setOnGetListener(OnNetListener listener) {
 		mGetListener = listener;
 	}
 
-	public void setOnPostListener(OnNetListener listener)
-	{
+	public void setOnPostListener(OnNetListener listener) {
 		mPostListener = listener;
 	}
 
-	public void execGetFeeds()
-	{
+	public void execGetFeeds() {
 		Call<GetVideosResponse> call = mService.getVideos();
-		enqueueCall(call, mGetListener);
-	}
-
-	public void execPostFeed(String id,
-						 String userName,
-						 MultipartBody.Part image,
-						 MultipartBody.Part video)
-	{
-		Call<PostVideoResponse> call = mService.postVideo(id, userName, image, video);
-		enqueueCall(call, mPostListener);
-	}
-
-	private <T> void enqueueCall(Call<T> call, OnNetListener listener)
-	{
 		mCallList.add(call);
-		call.enqueue(new Callback<T>()
-		{
+		call.enqueue(new Callback<GetVideosResponse>() {
 			@Override
-			public void onResponse(Call<T> call, Response<T> response)
-			{
+			public void onResponse(Call<GetVideosResponse> call, Response<GetVideosResponse> response) {
 				mCallList.remove(call);
-				listener.exec(response);
+				mGetListener.exec(response);
 			}
 
 			@Override
-			public void onFailure(Call<T> call, Throwable t)
-			{
+			public void onFailure(Call<GetVideosResponse> call, Throwable t) {
 				mCallList.remove(call);
-				t.printStackTrace();
+			}
+		});
+	}
+
+	public void execPostFeed(String id,
+	                         String userName,
+	                         MultipartBody.Part image,
+	                         MultipartBody.Part video) {
+		Call<PostVideoResponse> call = mService.postVideo(id, userName, image, video);
+		mCallList.add(call);
+		call.enqueue(new Callback<PostVideoResponse>() {
+			@Override
+			public void onResponse(Call<PostVideoResponse> call, Response<PostVideoResponse> response) {
+				mCallList.remove(call);
+				mPostListener.exec(response);
+			}
+
+			@Override
+			public void onFailure(Call<PostVideoResponse> call, Throwable t) {
+				mCallList.remove(call);
 			}
 		});
 	}

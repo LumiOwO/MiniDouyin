@@ -44,7 +44,7 @@ public class ScrollCalculatorHelper {
         if (firstVisible == firstVisibleItem && lastVisible == lastVisibleItem && visibleCount  == visibleItemCount) {
             return;
         }
-        Log.e(TAG, "onScroll: " + visibleItemCount);
+//        Log.e(TAG, "onScroll: " + visibleItemCount);
         firstVisible = firstVisibleItem;
         lastVisible = lastVisibleItem;
         visibleCount = visibleItemCount;
@@ -76,7 +76,7 @@ public class ScrollCalculatorHelper {
                             || player.getCurrentPlayer().getCurrentState() == GSYBaseVideoPlayer.CURRENT_STATE_ERROR)) {
                         needPlay = true;
                     }
-                    Log.e(TAG, "playVideo: needPlay " + needPlay);
+//                    Log.e(TAG, "playVideo: needPlay " + needPlay);
                     break;
                 }
 
@@ -93,7 +93,7 @@ public class ScrollCalculatorHelper {
 //                }
             }
             runnable = new PlayRunnable(gsyBaseVideoPlayer);
-            Log.e(TAG, "playVideo: play ");
+//            Log.e(TAG, "playVideo: play ");
             //降低频率
             playHandler.postDelayed(runnable, 400);
         }
@@ -122,7 +122,7 @@ public class ScrollCalculatorHelper {
                 if (rangePosition >= rangeTop && rangePosition <= rangeBottom) {
                     inPosition = true;
                 }
-                Log.e(TAG, "run: inPosotion " + inPosition);
+//                Log.e(TAG, "run: inPosotion " + inPosition);
                 if (inPosition) {
                     startPlayLogic(gsyBaseVideoPlayer, gsyBaseVideoPlayer.getContext());
                 }
