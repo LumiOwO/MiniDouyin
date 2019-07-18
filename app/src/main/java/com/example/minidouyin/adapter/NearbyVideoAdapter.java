@@ -1,4 +1,4 @@
-package com.example.minidouyin.fragments.nearby;
+package com.example.minidouyin.adapter;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;

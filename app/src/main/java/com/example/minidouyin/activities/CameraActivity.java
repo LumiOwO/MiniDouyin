@@ -22,6 +22,7 @@ import com.cjt2325.cameralibrary.listener.ClickListener;
 import com.cjt2325.cameralibrary.listener.ErrorListener;
 import com.cjt2325.cameralibrary.listener.JCameraListener;
 import com.example.minidouyin.R;
+import com.example.minidouyin.model.CurrentUser;
 import com.example.minidouyin.net.NetManager;
 import com.example.minidouyin.net.OnNetListener;
 import com.example.minidouyin.net.response.PostVideoResponse;
@@ -40,9 +41,6 @@ import okhttp3.RequestBody;
 import retrofit2.Response;
 
 public class CameraActivity extends AppCompatActivity {
-
-	private static final String DEFAULT_SID = "7777777";
-	private static final String DEFAULT_USERNAME = "user007";
 
 	private static final int CODE_FOR_PICK_PHOTO = 999;
 	private static final int CODE_FOR_PICK_VIDEO = 998;
@@ -278,7 +276,7 @@ public class CameraActivity extends AppCompatActivity {
 		MultipartBody.Part coverImagePart = getMultipartFromUri("cover_image", mSelectedImage);
 		MultipartBody.Part videoPart = getMultipartFromUri("video", mSelectedVideo);
 		netManager.execPostFeed(
-				DEFAULT_SID, DEFAULT_USERNAME,
+				CurrentUser.getStudentID(), CurrentUser.getUsername(),
 				coverImagePart, videoPart
 		);
 

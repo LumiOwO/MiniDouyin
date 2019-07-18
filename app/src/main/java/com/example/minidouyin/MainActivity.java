@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.minidouyin.activities.CameraActivity;
+import com.example.minidouyin.fragments.InfoFragment;
 import com.example.minidouyin.fragments.MainFragment;
 import com.google.android.material.tabs.TabLayout;
 
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 				if (position == 0) {
 					ret = new MainFragment();
 				} else if (position == 1) {
-					ret = new MainFragment();
+					ret = new InfoFragment();
 				}
 				return ret;
 			}
@@ -52,6 +53,8 @@ public class MainActivity extends AppCompatActivity {
 				CharSequence ret = null;
 				if (position == 0) {
 					ret = "首页";
+				} else if (position == 1) {
+					ret = "我的";
 				}
 				return ret;
 			}
