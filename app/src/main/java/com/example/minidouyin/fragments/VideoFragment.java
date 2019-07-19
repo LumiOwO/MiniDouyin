@@ -195,6 +195,12 @@ public class VideoFragment extends Fragment {
 			@Override
 			public void run() {
 				mScrollCalculatorHelper.onScrollStateChanged(mRecyclerView, RecyclerView.SCROLL_STATE_IDLE);
+
+				LinearLayoutManager linearLayoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+				int firstVisibleItem = linearLayoutManager.findFirstVisibleItemPosition();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				HistoryRecord historyRecord = new HistoryRecord(CurrentUser.getStudentID(), mVideoList.get(firstVisibleItem).getId(), sdf.format(new Date()));
+				mMiniDouYinDatabaseHelper.executeInsertHistory(historyRecord);
 			}
 		}, 1000);
 	}
