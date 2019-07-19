@@ -8,7 +8,6 @@ public class MainApplication extends Application {
 
 	@Override public void onCreate() {
 		super.onCreate();
-//		LeakSentry.config = LeakSentry.config.copy(watchFragmentViews = false);
 		MiniDouYinDatabaseHelper.getDatabase(getApplicationContext());
 	}
 }

@@ -86,6 +86,7 @@ public class InfoFragment extends Fragment
 								public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
 									CurrentUser.setStudentID(input.toString());
 									setCurrentUserInfo();
+									refreshData();
 						}
 					})
 					.show();
@@ -105,7 +106,7 @@ public class InfoFragment extends Fragment
 								new MaterialDialog.InputCallback() {
 									@Override
 									public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-										CurrentUser.setStudentID(input.toString());
+										CurrentUser.setUsername(input.toString());
 										setCurrentUserInfo();
 									}
 								})
